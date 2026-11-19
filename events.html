@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover Hacktivators events, workshops, and learning experiences.">
+  <title>Events | Hacktivators</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    .events-container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 60px 7%;
+    }
+
+    .event-card {
+      position: relative;
+      padding: 32px;
+      margin: 30px 0;
+      border: 1px solid rgba(0, 190, 255, .2);
+      border-radius: 20px;
+      background: rgba(12, 24, 42, .7);
+      transition: transform .3s ease, border-color .3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      border-color: #00cfff;
+    }
+
+    .event-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .event-date {
+      color: #00cfff;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+
+    .event-status {
+      padding: 7px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(0, 190, 255, .12);
+      color: #42d9ff;
+    }
+
+    .event-status.upcoming {
+      background: rgba(0, 220, 150, .13);
+      color: #36e6ad;
+    }
+
+    .event-card h2 {
+      font-size: 27px;
+      margin-bottom: 12px;
+    }
+
+    .event-description {
+      line-height: 1.8;
+      opacity: .8;
+      margin-bottom: 22px;
+    }
+
+    .event-topics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .topic {
+      padding: 17px;
+      border-radius: 12px;
+      background: rgba(0, 150, 255, .07);
+      border: 1px solid rgba(0, 190, 255, .12);
+    }
+
+    .topic h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #42d9ff;
+    }
+
+    .topic p {
+      font-size: 13px;
+      line-height: 1.7;
+      opacity: .8;
+    }
+
+    body.light-mode .event-card {
+      background: rgba(255, 255, 255, .9);
+      border-color: rgba(0, 120, 220, .2);
+    }
+
+    body.light-mode .topic {
+      background: rgba(0, 120, 220, .06);
+    }
+
+    @media (max-width: 650px) {
+      .event-topics {
+        grid-template-columns: 1fr;
+      }
+
+      .event-card {
+        padding: 23px;
+      }
+
+      .event-card h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar">
+    <a href="index.html" class="logo">HACKTIVATORS<span>.</span></a>
+
+    <nav>
+      <a href="index.html#home">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="team.html">Our Team</a>
+      <a href="events.html" class="active">Events</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+
+    <button id="themeToggle" aria-label="Toggle theme">☀</button>
+  </header>
+
+  <main>
+
+    <section class="hero section">
+      <div class="hero-content">
+        <p class="eyebrow">LEARN • CREATE • GROW</p>
+        <h1>Our <span>Events.</span></h1>
+        <p>
+          Every event is an opportunity to learn something new,
+          discover different skills, and grow together.
+        </p>
+        <a href="#events" class="primary-btn">Explore Events</a>
+      </div>
+    </section>
+
+    <section class="events-container section" id="events">
+
+      <div class="section-heading">
+        <p class="eyebrow">OUR JOURNEY</p>
+        <h2>Workshops & <span>Experiences</span></h2>
+        <p>Explore the learning experiences organized by Hacktivators.</p>
+      </div>
+
+      <!-- Event 1 -->
+      <article class="event-card">
+        <div class="event-top">
+          <span class="event-date">27 OCTOBER 2026</span>
+          <span class="event-status">Completed</span>
+        </div>
+
+        <h2>Discover Your Potential</h2>
+        <p class="event-description">
+          An introductory learning experience covering communication,
+          creativity, programming, and game development.
+        </p>
+
+        <div class="event-topics">
+          <div class="topic">
+            <h3>🧠 Emotional Intelligence</h3>
+            <p>
+              Developing emotional intelligence and effective
+              communication skills.
+            </p>
+          </div>
+
+          <div class="topic">
+            <h3>🎨 Design Basics</h3>
+            <p>
+              Discovering the fundamentals of design and
+              turning ideas into visual creativity.
+            </p>
+          </div>
+
+          <div class="topic">
+            <h3>🧩 Block-Based Programming</h3>
+            <p>
+              Exploring programming fundamentals
+              in a fun and interactive way.
+            </p>
+          </div>
+
+          <div class="topic">
+            <h3>🎮 Game Development</h3>
+            <p>
+              Discovering game development and
+              creating interactive experiences.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Event 2 -->
+      <article class="event-card">
+        <div class="event-top">
+          <span class="event-date">12 NOVEMBER 2026</span>
+          <span class="event-status">Completed</span>
+        </div>
+
+        <h2>Creative Skills & Technology</h2>
+        <p class="event-description">
+          A practical learning experience introducing participants
+          to video editing, programming, and game creation.
+        </p>
+
+        <div class="event-topics">
+          <div class="topic">
+            <h3>🎬 Video Editing</h3>
+            <p>
+              Learning how to edit videos using
+              InShot and CapCut.
+            </p>
+          </div>
+
+          <div class="topic">
+            <h3>💻 Block-Based Programming</h3>
+            <p>
+              Discovering the basics of programming
+              using coding blocks.
+            </p>
+          </div>
+
+          <div class="topic">
+            <h3>🎮 Game Development</h3>
+            <p>
+              Learning how to create your own game
+              and explore game development.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Event 3 -->
+      <article class="event-card">
+        <div class="event-top">
+          <span class="event-date">23 NOVEMBER 2026</span>
+          <span class="event-status upcoming">Upcoming</span>
+        </div>
+
+        <h2>Presentation Skills & Technology Awareness</h2>
+        <p class="event-description">
+          An upcoming learning experience focused on presentation
+          skills, computer hardware, and understanding artificial intelligence.
+        </p>
+
+        <div class="event-topics">
+          <div class="topic">
+            <h3>🎤 Presentation Skills</h3>
+            <p>
+              Developing presentation skills and
+              learning how to communicate ideas confidently.
+            </p>
+          </div>
+
+          <div class="topic">
+            <h3>🖥️ Inside a Computer</h3>
+            <p>
+              Exploring the internal components of a computer
+              and understanding their basic functions.
+            </p>
+          </div>
+
+          <div class="topic">
+            <h3>🤖 Understanding AI</h3>
+            <p>
+              Discovering what artificial intelligence is
+              and exploring its benefits and possible harms.
+            </p>
+          </div>
+
+          <div class="topic">
+            <h3>⚠️ Technology Risks</h3>
+            <p>
+              Understanding technology risks and the
+              potential dangers of artificial intelligence.
+            </p>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> Hacktivators. All rights reserved.</p>
+    <a href="index.html">Back to Home ↑</a>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
