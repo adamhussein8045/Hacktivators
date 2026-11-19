@@ -297,10 +297,31 @@ onAuthStateChanged(auth, async user => {
     return;
   }
 
-  showDashboard();
-  hideMessage();
+showDashboard();
+hideMessage();
+
+try {
+  const result = await importOriginalData();
+
   startTeamListener();
   startEventsListener();
+
+  if (result.importedMembers || result.importedEvents) {
+    showMessage(
+      `Original data imported successfully: ${result.importedMembers} members and ${result.importedEvents} events.`
+    );
+  }
+} catch (error) {
+  console.error("Initial data import error:", error);
+
+  startTeamListener();
+  startEventsListener();
+
+  showMessage(
+    "Could not import original data. Check Firebase permissions.",
+    true
+  );
+}
 });
 
 // Logout
