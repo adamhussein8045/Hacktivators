@@ -1042,3 +1042,26 @@ html[dir="rtl"] .home-hero::after { right: auto; left: 100px; }
 html[dir="rtl"] .footer { direction: rtl; }
 @media (max-width: 900px) { #languageToggle { order: 2; } }
 @media (max-width: 600px) { #languageToggle { height: 36px; min-width: 54px; font-size: 11px; } }
+.admin-language-switch {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin: 15px 0;
+}
+
+.admin-language-switch button {
+  padding: 9px 16px;
+  border: 1px solid #00D9F5;
+  border-radius: 9px;
+  background: #071426;
+  color: #00D9F5;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.admin-language-switch button.active,
+.admin-language-switch button:hover {
+  background: #00D9F5;
+  color: #071426;
+}
