@@ -189,6 +189,99 @@ loginForm.addEventListener("submit", async event => {
   }
 });
 
+async function importOriginalData() {
+  const teamSnapshot = await getDocs(collection(db, "team_members"));
+  const eventsSnapshot = await getDocs(collection(db, "events"));
+
+  const originalMembers = [
+    ["celia-ahmed", "Celia Ahmed", "Leader Of Team", "Team Leader", "CA"],
+    ["omar-mohamed", "Omar Mohamed", "Co-Leader", "Leadership", "OM"],
+    ["salma-emad", "Salma Emad", "Co-Leader", "Leadership", "SE"],
+    ["logien-mohamed", "Logien Mohamed", "Co-Leader", "Leadership", "LM"],
+    ["adam-hussein", "Adam Hussein", "Member Of Programming Department", "Programming", "AH"],
+    ["youssef-khaled", "Youssef Khaled", "Photographer", "Photography", "YK"],
+    ["lamar-abd-elmohsen", "Lamar Abd Elmohsen", "Photographer", "Photography", "LA"],
+    ["saleen-ahmed", "Saleen Ahmed", "Designer & Video Editor", "Design & Media", "SA"],
+    ["sagda-ahmed", "Sagda Ahmed", "Designer & Organizer", "Design & Organization", "SA"],
+    ["omar-mostafa", "Omar Mostafa", "Member Of Programming Department", "Programming", "OM"],
+    ["yassin-mohamed", "Yassin Mohamed", "Member Of Programming Department", "Programming", "YM"],
+    ["hana-ahmed", "Hana Ahmed", "Designer", "Design", "HA"]
+  ];
+
+  const originalEvents = [
+    {
+      id: "event-27-october-2026",
+      title: "Discover Your Potential",
+      date: "2026-10-27",
+      status: "Completed",
+      description: "An introductory learning experience covering communication, creativity, programming, and game development.",
+      topics: [
+        "🧠 Emotional Intelligence",
+        "🎨 Design Basics",
+        "🧩 Block-Based Programming",
+        "🎮 Game Development"
+      ]
+    },
+    {
+      id: "event-12-november-2026",
+      title: "Creative Skills & Technology",
+      date: "2026-11-12",
+      status: "Completed",
+      description: "A practical learning experience introducing participants to video editing, programming, and game creation.",
+      topics: [
+        "🎬 Video Editing",
+        "💻 Block-Based Programming",
+        "🎮 Game Development"
+      ]
+    },
+    {
+      id: "event-23-november-2026",
+      title: "Presentation Skills & Technology Awareness",
+      date: "2026-11-23",
+      status: "Upcoming",
+      description: "An upcoming learning experience focused on presentation skills, computer hardware, and understanding artificial intelligence.",
+      topics: [
+        "🎤 Presentation Skills",
+        "🖥️ Inside a Computer",
+        "🤖 Understanding AI",
+        "⚠️ Technology Risks"
+      ]
+    }
+  ];
+
+  let importedMembers = 0;
+  let importedEvents = 0;
+
+  // Import members only if the collection is empty.
+  if (teamSnapshot.empty) {
+    for (const member of originalMembers) {
+      const [id, name, role, department, initials] = member;
+
+      await setDoc(doc(db, "team_members", id), {
+        name,
+        role,
+        department,
+        initials
+      });
+
+      importedMembers++;
+    }
+  }
+
+  // Import events only if the collection is empty.
+  if (eventsSnapshot.empty) {
+    for (const event of originalEvents) {
+      const { id, ...data } = event;
+
+      await setDoc(doc(db, "events", id), data);
+
+      importedEvents++;
+    }
+  }
+
+  return { importedMembers, importedEvents };
+}
+
 // Authentication state
 onAuthStateChanged(auth, async user => {
   stopListeners();
