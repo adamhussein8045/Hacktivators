@@ -16,145 +16,321 @@
 
     body {
       min-height: 100vh;
-      font-family: Arial, sans-serif;
       background: #071426;
-      color: #fff;
+      color: #eef7ff;
+      font-family: Arial, sans-serif;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .login-screen {
+      min-height: 100vh;
       display: grid;
       place-items: center;
       padding: 20px;
     }
 
-    .container {
+    .login-card {
       width: 100%;
-      max-width: 440px;
-      background: #0d2038;
+      max-width: 420px;
+      padding: 35px;
       border: 1px solid #173b58;
       border-radius: 20px;
-      padding: 35px;
-      box-shadow: 0 15px 50px #0005;
+      background: #0d2038;
     }
 
-    .logo {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .logo h1 {
-      font-size: 28px;
+    .brand {
       color: #00D9F5;
+      font-size: 27px;
+      font-weight: 900;
       letter-spacing: 1px;
+      margin-bottom: 8px;
     }
 
-    .logo p {
-      color: #9aafc4;
-      margin-top: 8px;
-      font-size: 14px;
+    .muted {
+      color: #91a9c1;
+      line-height: 1.7;
     }
 
     h2 {
-      font-size: 21px;
-      margin-bottom: 22px;
+      margin: 25px 0 18px;
     }
 
     label {
       display: block;
-      color: #c5d5e5;
-      font-size: 14px;
       margin: 16px 0 8px;
+      color: #c7d8e9;
+      font-size: 14px;
     }
 
-    input {
+    input, textarea, select {
       width: 100%;
-      padding: 14px;
+      padding: 13px;
+      color: white;
+      background: #071426;
       border: 1px solid #294761;
       border-radius: 10px;
-      background: #071426;
-      color: white;
       outline: none;
-      font-size: 15px;
     }
 
-    input:focus {
+    input:focus, textarea:focus, select:focus {
       border-color: #00D9F5;
     }
 
-    button {
-      width: 100%;
-      margin-top: 24px;
-      padding: 14px;
-      border: none;
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .primary-btn, .secondary-btn, .danger-btn {
+      border: 0;
       border-radius: 10px;
-      background: linear-gradient(90deg, #00D9F5, #348BFF);
+      padding: 12px 17px;
+      font-weight: 700;
+    }
+
+    .primary-btn {
       color: #071426;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+      background: linear-gradient(90deg, #00D9F5, #348BFF);
     }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    #loginMessage {
-      margin-top: 16px;
-      font-size: 14px;
-      line-height: 1.6;
-      color: #ff8585;
-      text-align: center;
-    }
-
-    #dashboard {
-      display: none;
-      width: 100%;
-      max-width: 900px;
-    }
-
-    .dashboard-header {
-      background: #0d2038;
-      border: 1px solid #173b58;
-      border-radius: 16px;
-      padding: 25px;
-      margin-bottom: 20px;
-    }
-
-    .dashboard-header h1 {
-      color: #00D9F5;
-      margin-bottom: 8px;
-    }
-
-    .dashboard-header p {
-      color: #9aafc4;
-    }
-
-    .dashboard-section {
-      background: #0d2038;
-      border: 1px solid #173b58;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 16px;
-    }
-
-    .dashboard-section h2 {
-      color: #00D9F5;
-      margin-bottom: 10px;
-    }
-
-    .dashboard-section p {
-      color: #9aafc4;
-      line-height: 1.7;
-    }
-
-    #logoutButton {
-      max-width: 150px;
-      background: #263d55;
+    .secondary-btn {
       color: white;
-      margin-top: 15px;
+      background: #294761;
     }
 
-    @media (max-width: 500px) {
-      .container {
-        padding: 25px 20px;
+    .danger-btn {
+      color: white;
+      background: #a93248;
+    }
+
+    .full-btn {
+      width: 100%;
+      margin-top: 22px;
+    }
+
+    .message {
+      margin-top: 15px;
+      color: #ff9999;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      padding: 28px 18px;
+      background: #0a1b30;
+      border-right: 1px solid #18344e;
+    }
+
+    .sidebar .brand {
+      font-size: 21px;
+      margin: 0 8px 35px;
+    }
+
+    .nav-label {
+      margin: 25px 10px 12px;
+      color: #6f8ba7;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      padding: 13px 12px;
+      margin-bottom: 7px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: #b8cce0;
+      background: transparent;
+    }
+
+    .nav-btn.active, .nav-btn:hover {
+      color: #00D9F5;
+      background: #102b43;
+      border-color: #194763;
+    }
+
+    .sidebar-bottom {
+      margin-top: 35px;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 30px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .topbar h1 {
+      font-size: 27px;
+    }
+
+    .topbar p {
+      margin-top: 7px;
+    }
+
+    .panel {
+      padding: 24px;
+      margin-bottom: 22px;
+      border: 1px solid #173b58;
+      border-radius: 16px;
+      background: #0d2038;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      color: #00D9F5;
+      font-size: 20px;
+    }
+
+    .panel-description {
+      color: #91a9c1;
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 16px;
+    }
+
+    .form-grid .wide {
+      grid-column: 1 / -1;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .item-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      padding: 16px;
+      background: #091a2c;
+      border: 1px solid #1b3b56;
+      border-radius: 12px;
+    }
+
+    .item-info h3 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .item-info p {
+      color: #91a9c1;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .item-actions button {
+      padding: 9px 12px;
+      font-size: 12px;
+    }
+
+    .empty {
+      padding: 25px;
+      text-align: center;
+      color: #91a9c1;
+      border: 1px dashed #294761;
+      border-radius: 12px;
+    }
+
+    .notice {
+      padding: 13px;
+      margin-bottom: 18px;
+      color: #a8eaff;
+      background: #102b43;
+      border: 1px solid #194763;
+      border-radius: 10px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 800px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid #18344e;
+      }
+
+      .sidebar .brand {
+        margin-bottom: 18px;
+      }
+
+      .nav-label {
+        display: none;
+      }
+
+      .nav-btn {
+        width: auto;
+        margin: 4px;
+      }
+
+      .sidebar-bottom {
+        margin-top: 10px;
+      }
+
+      .main {
+        padding: 20px 14px;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid .wide {
+        grid-column: auto;
+      }
+
+      .login-card {
+        padding: 25px;
       }
     }
   </style>
@@ -162,66 +338,178 @@
 
 <body>
 
-  <main class="container" id="loginPanel">
-    <div class="logo">
-      <h1>HACKTIVATORS</h1>
-      <p>Official Website Administration</p>
+  <section class="login-screen" id="loginPanel">
+    <div class="login-card">
+      <div class="brand">HACKTIVATORS.</div>
+      <p class="muted">Official Website Administration</p>
+
+      <h2>Admin Login</h2>
+
+      <form id="loginForm">
+        <label for="email">Email Address</label>
+        <input id="email" type="email" autocomplete="username" required>
+
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+
+        <button class="primary-btn full-btn" id="loginButton" type="submit">
+          Sign In
+        </button>
+      </form>
+
+      <p class="message" id="loginMessage" role="status"></p>
     </div>
+  </section>
 
-    <h2>Admin Login</h2>
+  <div class="app hidden" id="dashboard">
 
-    <form id="loginForm">
-      <label for="email">Email Address</label>
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter admin email"
-        autocomplete="username"
-        required
-      >
+    <aside class="sidebar">
+      <div class="brand">HACKTIVATORS.</div>
 
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter password"
-        autocomplete="current-password"
-        required
-      >
+      <p class="nav-label">MAIN MENU</p>
 
-      <button type="submit" id="loginButton">Sign In</button>
-    </form>
+      <button class="nav-btn active" data-section="team">👥 Team Management</button>
+      <button class="nav-btn" data-section="events">📅 Events Management</button>
+      <button class="nav-btn" data-section="social">🔗 Social Links</button>
+      <button class="nav-btn" data-section="content">🌐 Website Content</button>
 
-    <p id="loginMessage" role="status"></p>
-  </main>
+      <div class="sidebar-bottom">
+        <button class="nav-btn" id="logoutButton">↪ Sign Out</button>
+      </div>
+    </aside>
 
-  <main id="dashboard">
-    <header class="dashboard-header">
-      <h1>Hacktivators Dashboard</h1>
-      <p>Welcome to your website control panel.</p>
-      <button id="logoutButton" type="button">Sign Out</button>
-    </header>
+    <main class="main">
 
-    <section class="dashboard-section">
-      <h2>Team Management</h2>
-      <p>Manage team members, names and roles.</p>
-    </section>
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">Team Management</h1>
+          <p class="muted">Manage your Hacktivators website.</p>
+        </div>
+        <span class="muted" id="connectionStatus">Connecting...</span>
+      </header>
 
-    <section class="dashboard-section">
-      <h2>Events Management</h2>
-      <p>Add, edit and manage your team events.</p>
-    </section>
+      <div id="globalMessage" class="notice hidden" role="status"></div>
 
-    <section class="dashboard-section">
-      <h2>Social Links</h2>
-      <p>Manage your social media links.</p>
-    </section>
+      <section id="teamSection" class="content-section">
 
-    <section class="dashboard-section">
-      <h2>Website Content</h2>
-      <p>Manage your website content and information.</p>
-    </section>
-  </main>
+        <div class="panel">
+          <h2 id="teamFormTitle">Add Team Member</h2>
+          <p class="panel-description">Add a new member or edit an existing one.</p>
+
+          <form id="teamForm">
+            <input type="hidden" id="teamId">
+
+            <div class="form-grid">
+              <div>
+                <label for="memberName">Full Name</label>
+                <input id="memberName" required placeholder="Member name">
+              </div>
+
+              <div>
+                <label for="memberRole">Role</label>
+                <input id="memberRole" required placeholder="e.g. Co-Leader">
+              </div>
+
+              <div>
+                <label for="memberDepartment">Department</label>
+                <input id="memberDepartment" required placeholder="e.g. Programming">
+              </div>
+
+              <div>
+                <label for="memberInitials">Initials</label>
+                <input id="memberInitials" maxlength="4" placeholder="e.g. AH">
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-btn" type="submit" id="saveMemberButton">Save Member</button>
+              <button class="secondary-btn" type="button" id="cancelMemberEdit">Clear Form</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2>Team Members</h2>
+          <p class="panel-description">Members currently stored in Firebase.</p>
+          <div class="item-list" id="teamList">
+            <div class="empty">Loading team members...</div>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="eventsSection" class="content-section hidden">
+
+        <div class="panel">
+          <h2 id="eventFormTitle">Add Event</h2>
+          <p class="panel-description">Create or update a Hacktivators event.</p>
+
+          <form id="eventForm">
+            <input type="hidden" id="eventId">
+
+            <div class="form-grid">
+              <div>
+                <label for="eventTitle">Event Title</label>
+                <input id="eventTitle" required placeholder="Event name">
+              </div>
+
+              <div>
+                <label for="eventDate">Event Date</label>
+                <input id="eventDate" type="date" required>
+              </div>
+
+              <div>
+                <label for="eventStatus">Status</label>
+                <select id="eventStatus">
+                  <option value="Upcoming">Upcoming</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="eventTopics">Topics</label>
+                <textarea id="eventTopics" class="wide" required placeholder="One topic per line"></textarea>
+              </div>
+
+              <div class="wide">
+                <label for="eventDescription">Description</label>
+                <textarea id="eventDescription" required placeholder="Event description"></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-btn" type="submit" id="saveEventButton">Save Event</button>
+              <button class="secondary-btn" type="button" id="cancelEventEdit">Clear Form</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2>Events</h2>
+          <p class="panel-description">Events currently stored in Firebase.</p>
+          <div class="item-list" id="eventsList">
+            <div class="empty">Loading events...</div>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="socialSection" class="content-section hidden">
+        <div class="panel">
+          <h2>Social Links</h2>
+          <p class="panel-description">This section will be connected in the next stage.</p>
+        </div>
+      </section>
+
+      <section id="contentSection" class="content-section hidden">
+        <div class="panel">
+          <h2>Website Content</h2>
+          <p class="panel-description">This section will be connected in the next stage.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
 
   <script type="module" src="js/admin.js"></script>
 </body>
