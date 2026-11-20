@@ -12,140 +12,627 @@
   <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{min-height:100vh;background:#fff;color:#171717;font-family:"Aref Ruqaa",serif}
-    button,input,textarea,select{font:inherit}
-    button{cursor:pointer}
-    .hidden{display:none!important}
-    .login-screen{min-height:100vh;display:grid;place-items:center;padding:20px}
-    .login-card{width:100%;max-width:430px;padding:32px;border:1px solid #eae7e3;border-radius:18px;background:#fff}
-    .brand{color:#171717;font-size:27px;font-weight:700;margin-bottom:8px}
-    .muted,.panel-description,.item-info p{color:#68452f;line-height:1.7}
-    h2{margin:24px 0 15px}
-    label{display:block;margin:14px 0 7px;color:#68452f}
-    input,textarea,select{width:100%;padding:12px;color:#171717;background:#fff;border:1px solid #eae7e3;border-radius:9px;outline:none}
-    input:focus,textarea:focus,select:focus{border-color:#68452f;box-shadow:0 0 0 2px rgba(104,69,47,.08)}
-    textarea{min-height:100px;resize:vertical}
-    .primary-btn,.secondary-btn,.danger-btn{border:1px solid transparent;border-radius:9px;padding:10px 16px;font-weight:700}
-    .primary-btn{color:#fff;background:#68452f}
-    .primary-btn:hover{background:#171717}
-    .secondary-btn{color:#68452f;background:#fff;border-color:#eae7e3}
-    .danger-btn{color:#fff;background:#171717}
-    button:disabled{opacity:.55;cursor:not-allowed}
-    .full-btn{width:100%;margin-top:20px}
-    .message{margin-top:14px;color:#a93248;line-height:1.6}
-    .app{min-height:100vh;display:grid;grid-template-columns:245px minmax(0,1fr)}
-    .sidebar{padding:26px 18px;background:#fff;border-right:1px solid #eae7e3}
-    .sidebar .brand{font-size:22px;margin:0 8px 30px}
-    .nav-label{margin:20px 10px 12px;color:#68452f;font-size:13px}
-    .nav-btn{width:100%;text-align:left;padding:12px;margin-bottom:7px;border:1px solid transparent;border-radius:9px;color:#68452f;background:#fff}
-    .nav-btn.active,.nav-btn:hover{color:#fff;background:#68452f}
-    .sidebar-bottom{margin-top:28px}
-    .main{min-width:0;padding:28px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:25px}
-    .topbar h1{font-size:27px}
-    .topbar p{margin-top:5px}
-    .topbar-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-    .admin-language-switch{display:flex;gap:7px}
-    .admin-language-switch button{padding:8px 12px;border:1px solid #eae7e3;border-radius:8px;color:#68452f;background:#fff}
-    .admin-language-switch button.active{color:#fff;background:#68452f;border-color:#68452f}
-    .panel{padding:22px;margin-bottom:20px;border:1px solid #eae7e3;border-radius:14px;background:#fff}
-    .panel h2{margin:0 0 7px;color:#171717;font-size:21px}
-    .panel-description{margin-bottom:18px}
-    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 15px}
-    .wide{grid-column:1/-1}
-    .form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
-    .item-list{display:grid;gap:11px;margin-top:18px}
-    .item{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px;border:1px solid #eae7e3;border-radius:11px}
-    .item-info{min-width:0;overflow-wrap:anywhere}
-    .item-info h3{margin-bottom:5px}
-    .item-actions{display:flex;gap:7px;flex-wrap:wrap}
-    .item-actions button{padding:7px 11px;font-size:13px}
-    .empty{padding:22px;text-align:center;color:#68452f;border:1px dashed #eae7e3;border-radius:10px}
-    .notice{padding:12px;margin-bottom:18px;color:#68452f;background:#fff;border:1px solid #eae7e3;border-radius:9px;line-height:1.6}
-    .field-hint{font-size:13px;color:#68452f;margin-top:5px}
-    .check-row{display:flex;align-items:center;gap:9px;margin-top:14px}
-    .check-row input{width:auto}
-    .check-row label{margin:0}
-    html[dir="rtl"] body{direction:rtl;text-align:right}
-    html[dir="rtl"] .sidebar{border-right:0;border-left:1px solid #eae7e3}
-    html[dir="rtl"] .nav-btn{text-align:right}
-    html[dir="rtl"] .form-actions,html[dir="rtl"] .item-actions{flex-direction:row-reverse}
-    html[dir="rtl"] .admin-language-switch{direction:ltr}
-    @media(max-width:800px){
-      .app{grid-template-columns:1fr}
-      .sidebar{border-right:0;border-bottom:1px solid #eae7e3}
-      .sidebar .brand{margin-bottom:15px}
-      .nav-label{display:none}
-      .nav-btn{width:auto;margin:4px}
-      .sidebar-bottom{margin-top:8px}
-      .main{padding:18px 13px}
-      .topbar-actions{width:100%;justify-content:space-between}
-      html[dir="rtl"] .sidebar{border-left:0}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    @media(max-width:550px){
-      .form-grid{grid-template-columns:1fr}
-      .wide{grid-column:auto}
-      .login-card{padding:24px}
-      .panel{padding:16px}
+
+    body {
+      min-height: 100vh;
+      background: #FFFFFF;
+      color: #171717;
+      font-family: "Aref Ruqaa", serif;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 430px;
+      padding: 32px;
+      border: 1px solid #EAE7E3;
+      border-radius: 18px;
+      background: #FFFFFF;
+    }
+
+    .brand {
+      color: #171717;
+      font-size: 27px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .muted,
+    .panel-description,
+    .item-info p {
+      color: #68452F;
+      line-height: 1.7;
+    }
+
+    h2 {
+      margin: 24px 0 15px;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 7px;
+      color: #68452F;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      color: #171717;
+      background: #FFFFFF;
+      border: 1px solid #EAE7E3;
+      border-radius: 9px;
+      outline: none;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #68452F;
+      box-shadow: 0 0 0 2px rgba(104, 69, 47, 0.08);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .danger-btn {
+      border: 1px solid transparent;
+      border-radius: 9px;
+      padding: 10px 16px;
+      font-weight: 700;
+    }
+
+    .primary-btn {
+      color: #FFFFFF;
+      background: #68452F;
+    }
+
+    .primary-btn:hover {
+      background: #171717;
+    }
+
+    .secondary-btn {
+      color: #68452F;
+      background: #FFFFFF;
+      border-color: #EAE7E3;
+    }
+
+    .danger-btn {
+      color: #FFFFFF;
+      background: #171717;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .full-btn {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .message {
+      margin-top: 14px;
+      color: #A93248;
+      line-height: 1.6;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      padding: 26px 18px;
+      background: #FFFFFF;
+      border-right: 1px solid #EAE7E3;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar .brand {
+      font-size: 22px;
+      margin: 0 8px 30px;
+    }
+
+    .nav-label {
+      margin: 20px 10px 12px;
+      color: #68452F;
+      font-size: 13px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      padding: 12px;
+      margin-bottom: 7px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      color: #68452F;
+      background: #FFFFFF;
+      transition: 0.2s ease;
+    }
+
+    .nav-btn.active,
+    .nav-btn:hover {
+      color: #FFFFFF;
+      background: #68452F;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 25px;
+    }
+
+    /* Header Action Buttons */
+    .admin-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+    }
+
+    .back-home-btn,
+    .logout-btn {
+      min-width: 0;
+      flex: 1;
+      min-height: 43px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      font-family: "Aref Ruqaa", serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .back-home-btn {
+      color: #68452F;
+      background: #FFFFFF;
+      border: 1.5px solid #68452F;
+      box-shadow: 0 3px 10px rgba(104, 69, 47, 0.06);
+    }
+
+    .back-home-btn:hover {
+      color: #FFFFFF;
+      background: #68452F;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 14px rgba(104, 69, 47, 0.16);
+    }
+
+    .logout-btn {
+      color: #FFFFFF;
+      background: #68452F;
+      border: 1.5px solid #68452F;
+    }
+
+    .logout-btn:hover {
+      color: #FFFFFF;
+      background: #171717;
+      border-color: #171717;
+      transform: translateY(-2px);
+    }
+
+    .back-home-btn:active,
+    .logout-btn:active {
+      transform: scale(0.97);
+    }
+
+    .main {
+      min-width: 0;
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .topbar h1 {
+      font-size: 27px;
+    }
+
+    .topbar p {
+      margin-top: 5px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .admin-language-switch {
+      display: flex;
+      gap: 7px;
+    }
+
+    .admin-language-switch button {
+      padding: 8px 12px;
+      border: 1px solid #EAE7E3;
+      border-radius: 8px;
+      color: #68452F;
+      background: #FFFFFF;
+    }
+
+    .admin-language-switch button.active {
+      color: #FFFFFF;
+      background: #68452F;
+      border-color: #68452F;
+    }
+
+    .panel {
+      padding: 22px;
+      margin-bottom: 20px;
+      border: 1px solid #EAE7E3;
+      border-radius: 14px;
+      background: #FFFFFF;
+    }
+
+    .panel h2 {
+      margin: 0 0 7px;
+      color: #171717;
+      font-size: 21px;
+    }
+
+    .panel-description {
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 15px;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .item-list {
+      display: grid;
+      gap: 11px;
+      margin-top: 18px;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px;
+      border: 1px solid #EAE7E3;
+      border-radius: 11px;
+    }
+
+    .item-info {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .item-info h3 {
+      margin-bottom: 5px;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .item-actions button {
+      padding: 7px 11px;
+      font-size: 13px;
+    }
+
+    .empty {
+      padding: 22px;
+      text-align: center;
+      color: #68452F;
+      border: 1px dashed #EAE7E3;
+      border-radius: 10px;
+    }
+
+    .notice {
+      padding: 12px;
+      margin-bottom: 18px;
+      color: #68452F;
+      background: #FFFFFF;
+      border: 1px solid #EAE7E3;
+      border-radius: 9px;
+      line-height: 1.6;
+    }
+
+    .field-hint {
+      font-size: 13px;
+      color: #68452F;
+      margin-top: 5px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .check-row input {
+      width: auto;
+    }
+
+    .check-row label {
+      margin: 0;
+    }
+
+    html[dir="rtl"] body {
+      direction: rtl;
+      text-align: right;
+    }
+
+    html[dir="rtl"] .sidebar {
+      border-right: 0;
+      border-left: 1px solid #EAE7E3;
+    }
+
+    html[dir="rtl"] .nav-btn {
+      text-align: right;
+    }
+
+    html[dir="rtl"] .form-actions,
+    html[dir="rtl"] .item-actions {
+      flex-direction: row-reverse;
+    }
+
+    html[dir="rtl"] .admin-language-switch {
+      direction: ltr;
+    }
+
+    @media(max-width: 800px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid #EAE7E3;
+      }
+
+      .sidebar .brand {
+        margin-bottom: 15px;
+      }
+
+      .nav-label {
+        display: none;
+      }
+
+      .nav-btn {
+        width: auto;
+        margin: 4px;
+      }
+
+      .sidebar-bottom {
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      .admin-header-actions {
+        max-width: 360px;
+      }
+
+      .main {
+        padding: 18px 13px;
+      }
+
+      .topbar-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      html[dir="rtl"] .sidebar {
+        border-left: 0;
+      }
+    }
+
+    @media(max-width: 550px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wide {
+        grid-column: auto;
+      }
+
+      .login-card {
+        padding: 24px;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .admin-header-actions {
+        max-width: 100%;
+      }
+
+      .back-home-btn,
+      .logout-btn {
+        font-size: 13px;
+        padding: 9px 7px;
+      }
     }
   </style>
 </head>
 
 <body>
+
+  <!-- LOGIN -->
   <section class="login-screen" id="loginPanel">
     <div class="login-card">
       <div class="brand">HACKTIVATORS.</div>
-      <p class="muted" data-en="Official Website Administration" data-ar="إدارة الموقع الرسمي">Official Website Administration</p>
-      <h2 data-en="Admin Login" data-ar="تسجيل دخول المسؤول">Admin Login</h2>
+
+      <p class="muted"
+         data-en="Official Website Administration"
+         data-ar="إدارة الموقع الرسمي">
+        Official Website Administration
+      </p>
+
+      <h2 data-en="Admin Login" data-ar="تسجيل دخول المسؤول">
+        Admin Login
+      </h2>
 
       <form id="loginForm">
-        <label for="email" data-en="Email Address" data-ar="البريد الإلكتروني">Email Address</label>
+        <label for="email" data-en="Email Address" data-ar="البريد الإلكتروني">
+          Email Address
+        </label>
         <input id="email" type="email" autocomplete="username" required>
 
-        <label for="password" data-en="Password" data-ar="كلمة المرور">Password</label>
+        <label for="password" data-en="Password" data-ar="كلمة المرور">
+          Password
+        </label>
         <input id="password" type="password" autocomplete="current-password" required>
 
-        <button class="primary-btn full-btn" id="loginButton" type="submit" data-en="Sign In" data-ar="تسجيل الدخول">Sign In</button>
+        <button class="primary-btn full-btn"
+                id="loginButton"
+                type="submit"
+                data-en="Sign In"
+                data-ar="تسجيل الدخول">
+          Sign In
+        </button>
       </form>
+
       <p class="message" id="loginMessage" role="status"></p>
     </div>
   </section>
 
+  <!-- ADMIN DASHBOARD -->
   <div class="app hidden" id="dashboard">
+
     <aside class="sidebar">
       <div class="brand">HACKTIVATORS.</div>
-      <p class="nav-label" data-en="MAIN MENU" data-ar="القائمة الرئيسية">MAIN MENU</p>
 
-      <button class="nav-btn active" data-section="team" data-en="👥 Team Management" data-ar="👥 إدارة الفريق">👥 Team Management</button>
-      <button class="nav-btn" data-section="events" data-en="📅 Events Management" data-ar="📅 إدارة الفعاليات">📅 Events Management</button>
-      <button class="nav-btn" data-section="social" data-en="🔗 Social Links" data-ar="🔗 روابط التواصل">🔗 Social Links</button>
-      <button class="nav-btn" data-section="content" data-en="🌐 Website Content" data-ar="🌐 محتوى الموقع">🌐 Website Content</button>
+      <p class="nav-label" data-en="MAIN MENU" data-ar="القائمة الرئيسية">
+        MAIN MENU
+      </p>
 
+      <button class="nav-btn active"
+              data-section="team"
+              data-en="👥 Team Management"
+              data-ar="👥 إدارة الفريق">
+        👥 Team Management
+      </button>
+
+      <button class="nav-btn"
+              data-section="events"
+              data-en="📅 Events Management"
+              data-ar="📅 إدارة الفعاليات">
+        📅 Events Management
+      </button>
+
+      <button class="nav-btn"
+              data-section="social"
+              data-en="🔗 Social Links"
+              data-ar="🔗 روابط التواصل">
+        🔗 Social Links
+      </button>
+
+      <button class="nav-btn"
+              data-section="content"
+              data-en="🌐 Website Content"
+              data-ar="🌐 محتوى الموقع">
+        🌐 Website Content
+      </button>
+
+      <!-- SIDEBAR ACTIONS -->
       <div class="sidebar-bottom">
-       <div class="admin-header-actions">         
-           <a href="index.html" class="back-home-btn" id="backHomeButton">
-    ↩ Back to Home
-  </a>
-         <br>
-  <button id="logoutButton" class="logout-btn" type="button">
-    ↪ Sign Out
-  </button>
-</div>
+        <div class="admin-header-actions">
+
+          <a href="index.html"
+             class="back-home-btn"
+             id="backHomeButton"
+             data-en="← Back to Home"
+             data-ar="← العودة للرئيسية">
+            ← Back to Home
+          </a>
+
+          <button id="logoutButton"
+                  class="logout-btn"
+                  type="button"
+                  data-en="↪ Sign Out"
+                  data-ar="↪ تسجيل الخروج">
+            ↪ Sign Out
+          </button>
+
+        </div>
       </div>
     </aside>
 
     <main class="main">
+
       <header class="topbar">
         <div>
           <h1 id="pageTitle">Team Management</h1>
-          <p class="muted" data-en="Manage your Hacktivators website." data-ar="تحكم في موقع Hacktivators.">Manage your Hacktivators website.</p>
+
+          <p class="muted"
+             data-en="Manage your Hacktivators website."
+             data-ar="تحكم في موقع Hacktivators.">
+            Manage your Hacktivators website.
+          </p>
         </div>
+
         <div class="topbar-actions">
           <div class="admin-language-switch">
             <button type="button" id="adminArabic">🇪🇬 العربية</button>
             <button type="button" id="adminEnglish">🇬🇧 English</button>
           </div>
+
           <span class="muted" id="connectionStatus">Connecting...</span>
         </div>
       </header>
@@ -154,104 +641,163 @@
 
       <!-- TEAM -->
       <section id="teamSection" class="content-section">
+
         <div class="panel">
           <h2 id="teamFormTitle">Add Team Member</h2>
-          <p class="panel-description" data-en="Add a new member or edit an existing one." data-ar="أضف عضوًا جديدًا أو عدّل بيانات عضو موجود.">Add a new member or edit an existing one.</p>
+
+          <p class="panel-description"
+             data-en="Add a new member or edit an existing one."
+             data-ar="أضف عضوًا جديدًا أو عدّل بيانات عضو موجود.">
+            Add a new member or edit an existing one.
+          </p>
 
           <form id="teamForm">
             <input type="hidden" id="teamId">
+
             <div class="form-grid">
               <div>
-                <label for="memberNameEn" data-en="Full Name (English)" data-ar="الاسم بالكامل (إنجليزي)">Full Name (English)</label>
+                <label for="memberNameEn">Full Name (English)</label>
                 <input id="memberNameEn" required placeholder="e.g. Adam Hussein">
               </div>
+
               <div>
-                <label for="memberNameAr" data-en="Full Name (Arabic)" data-ar="الاسم بالكامل (عربي)">Full Name (Arabic)</label>
+                <label for="memberNameAr">Full Name (Arabic)</label>
                 <input id="memberNameAr" required placeholder="مثال: آدم حسين">
               </div>
+
               <div>
-                <label for="memberRoleEn" data-en="Role (English)" data-ar="الوظيفة (إنجليزي)">Role (English)</label>
+                <label for="memberRoleEn">Role (English)</label>
                 <input id="memberRoleEn" required>
               </div>
+
               <div>
-                <label for="memberRoleAr" data-en="Role (Arabic)" data-ar="الوظيفة (عربي)">Role (Arabic)</label>
+                <label for="memberRoleAr">Role (Arabic)</label>
                 <input id="memberRoleAr" required>
               </div>
+
               <div>
-                <label for="memberDepartment" data-en="Department" data-ar="القسم">Department</label>
+                <label for="memberDepartment">Department</label>
                 <input id="memberDepartment" required>
               </div>
+
               <div>
-                <label for="memberInitials" data-en="Initials" data-ar="الأحرف الأولى">Initials</label>
+                <label for="memberInitials">Initials</label>
                 <input id="memberInitials" maxlength="4">
               </div>
             </div>
+
             <div class="form-actions">
-              <button class="primary-btn" type="submit" id="saveMemberButton">Save Member</button>
-              <button class="secondary-btn" type="button" id="cancelMemberEdit">Clear Form</button>
+              <button class="primary-btn" type="submit" id="saveMemberButton">
+                Save Member
+              </button>
+
+              <button class="secondary-btn" type="button" id="cancelMemberEdit">
+                Clear Form
+              </button>
             </div>
           </form>
         </div>
 
         <div class="panel">
           <h2 data-en="Team Members" data-ar="أعضاء الفريق">Team Members</h2>
-          <p class="panel-description" data-en="Members currently stored in Firebase." data-ar="الأعضاء المسجلون حاليًا في Firebase.">Members currently stored in Firebase.</p>
-          <div class="item-list" id="teamList"><div class="empty">Loading...</div></div>
+
+          <p class="panel-description"
+             data-en="Members currently stored in Firebase."
+             data-ar="الأعضاء المسجلون حاليًا في Firebase.">
+            Members currently stored in Firebase.
+          </p>
+
+          <div class="item-list" id="teamList">
+            <div class="empty">Loading...</div>
+          </div>
         </div>
       </section>
 
       <!-- EVENTS -->
       <section id="eventsSection" class="content-section hidden">
+
         <div class="panel">
           <h2 id="eventFormTitle">Add Event</h2>
-          <p class="panel-description" data-en="Create or update a Hacktivators event." data-ar="أنشئ فعالية جديدة أو عدّل فعالية موجودة.">Create or update a Hacktivators event.</p>
+
+          <p class="panel-description"
+             data-en="Create or update a Hacktivators event."
+             data-ar="أنشئ فعالية جديدة أو عدّل فعالية موجودة.">
+            Create or update a Hacktivators event.
+          </p>
 
           <form id="eventForm">
             <input type="hidden" id="eventId">
+
             <div class="form-grid">
               <div>
-                <label for="eventTitle" data-en="Event Title" data-ar="عنوان الفعالية">Event Title</label>
+                <label for="eventTitle">Event Title</label>
                 <input id="eventTitle" required>
               </div>
+
               <div>
-                <label for="eventDate" data-en="Event Date" data-ar="تاريخ الفعالية">Event Date</label>
+                <label for="eventDate">Event Date</label>
                 <input id="eventDate" type="date" required>
               </div>
+
               <div>
-                <label for="eventStatus" data-en="Status" data-ar="الحالة">Status</label>
+                <label for="eventStatus">Status</label>
                 <select id="eventStatus">
                   <option value="Upcoming">Upcoming</option>
                   <option value="Completed">Completed</option>
                 </select>
               </div>
+
               <div>
-                <label for="eventTopics" data-en="Topics (one per line)" data-ar="الموضوعات (كل موضوع في سطر)">Topics (one per line)</label>
+                <label for="eventTopics">Topics (one per line)</label>
                 <textarea id="eventTopics" required></textarea>
               </div>
+
               <div class="wide">
-                <label for="eventDescription" data-en="Description" data-ar="الوصف">Description</label>
+                <label for="eventDescription">Description</label>
                 <textarea id="eventDescription" required></textarea>
               </div>
             </div>
+
             <div class="form-actions">
-              <button class="primary-btn" type="submit" id="saveEventButton">Save Event</button>
-              <button class="secondary-btn" type="button" id="cancelEventEdit">Clear Form</button>
+              <button class="primary-btn" type="submit" id="saveEventButton">
+                Save Event
+              </button>
+
+              <button class="secondary-btn" type="button" id="cancelEventEdit">
+                Clear Form
+              </button>
             </div>
           </form>
         </div>
 
         <div class="panel">
           <h2 data-en="Events" data-ar="الفعاليات">Events</h2>
-          <p class="panel-description" data-en="Events currently stored in Firebase." data-ar="الفعاليات المسجلة حاليًا في Firebase.">Events currently stored in Firebase.</p>
-          <div class="item-list" id="eventsList"><div class="empty">Loading...</div></div>
+
+          <p class="panel-description"
+             data-en="Events currently stored in Firebase."
+             data-ar="الفعاليات المسجلة حاليًا في Firebase.">
+            Events currently stored in Firebase.
+          </p>
+
+          <div class="item-list" id="eventsList">
+            <div class="empty">Loading...</div>
+          </div>
         </div>
       </section>
 
       <!-- SOCIAL LINKS -->
       <section id="socialSection" class="content-section hidden">
+
         <div class="panel">
-          <h2 data-en="Manage Social Links" data-ar="إدارة روابط التواصل">Manage Social Links</h2>
-          <p class="panel-description" data-en="Edit your official links. You can enable or disable each link." data-ar="عدّل روابطك الرسمية، ويمكنك تفعيل أو إخفاء كل رابط.">Edit your official links. You can enable or disable each link.</p>
+          <h2 data-en="Manage Social Links" data-ar="إدارة روابط التواصل">
+            Manage Social Links
+          </h2>
+
+          <p class="panel-description"
+             data-en="Edit your official links. You can enable or disable each link."
+             data-ar="عدّل روابطك الرسمية، ويمكنك تفعيل أو إخفاء كل رابط.">
+            Edit your official links. You can enable or disable each link.
+          </p>
 
           <form id="socialForm">
             <div class="form-grid">
@@ -259,105 +805,177 @@
                 <label for="socialInstagram">Instagram URL</label>
                 <input id="socialInstagram" type="url" placeholder="https://instagram.com/...">
               </div>
+
               <div>
                 <label for="socialTikTok">TikTok URL</label>
                 <input id="socialTikTok" type="url" placeholder="https://tiktok.com/@...">
               </div>
+
               <div>
                 <label for="socialFacebook">Facebook URL</label>
                 <input id="socialFacebook" type="url" placeholder="https://facebook.com/...">
               </div>
+
               <div>
                 <label for="socialWhatsApp">WhatsApp Channel URL</label>
                 <input id="socialWhatsApp" type="url" placeholder="https://whatsapp.com/channel/...">
               </div>
+
               <div class="wide">
                 <label for="socialEmail">Contact Email</label>
                 <input id="socialEmail" type="email" placeholder="name@example.com">
               </div>
             </div>
+
             <div class="form-actions">
-              <button class="primary-btn" type="submit" id="saveSocialButton" data-en="Save Social Links" data-ar="حفظ روابط التواصل">Save Social Links</button>
-              <button class="secondary-btn" type="button" id="reloadSocialButton" data-en="Reload" data-ar="إعادة تحميل">Reload</button>
+              <button class="primary-btn"
+                      type="submit"
+                      id="saveSocialButton"
+                      data-en="Save Social Links"
+                      data-ar="حفظ روابط التواصل">
+                Save Social Links
+              </button>
+
+              <button class="secondary-btn"
+                      type="button"
+                      id="reloadSocialButton"
+                      data-en="Reload"
+                      data-ar="إعادة تحميل">
+                Reload
+              </button>
             </div>
           </form>
         </div>
+
         <div class="panel">
-          <h2 data-en="Link Visibility" data-ar="إظهار وإخفاء الروابط">Link Visibility</h2>
-          <p class="panel-description" data-en="Choose which links should be shown on the public website." data-ar="اختر الروابط التي تريد إظهارها على الموقع العام.">Choose which links should be shown on the public website.</p>
-          <div id="socialVisibility" class="item-list"><div class="empty">Loading...</div></div>
+          <h2 data-en="Link Visibility" data-ar="إظهار وإخفاء الروابط">
+            Link Visibility
+          </h2>
+
+          <p class="panel-description"
+             data-en="Choose which links should be shown on the public website."
+             data-ar="اختر الروابط التي تريد إظهارها على الموقع العام.">
+            Choose which links should be shown on the public website.
+          </p>
+
+          <div id="socialVisibility" class="item-list">
+            <div class="empty">Loading...</div>
+          </div>
         </div>
       </section>
 
       <!-- WEBSITE CONTENT -->
       <section id="contentSection" class="content-section hidden">
+
         <div class="panel">
-          <h2 data-en="Edit Website Text" data-ar="تعديل نصوص الموقع">Edit Website Text</h2>
-          <p class="panel-description" data-en="Edit Arabic and English text for the home, about and contact pages." data-ar="عدّل النصوص العربية والإنجليزية للصفحة الرئيسية وصفحة من نحن وصفحة التواصل.">Edit Arabic and English text for the home, about and contact pages.</p>
+          <h2 data-en="Edit Website Text" data-ar="تعديل نصوص الموقع">
+            Edit Website Text
+          </h2>
+
+          <p class="panel-description"
+             data-en="Edit Arabic and English text for the home, about and contact pages."
+             data-ar="عدّل النصوص العربية والإنجليزية للصفحة الرئيسية وصفحة من نحن وصفحة التواصل.">
+            Edit Arabic and English text for the home, about and contact pages.
+          </p>
 
           <form id="contentForm">
             <div class="form-grid">
-              <div class="wide"><h3 data-en="Home Page" data-ar="الصفحة الرئيسية">Home Page</h3></div>
+
+              <div class="wide">
+                <h3 data-en="Home Page" data-ar="الصفحة الرئيسية">Home Page</h3>
+              </div>
+
               <div>
                 <label for="homeTitleEn">Home title (English)</label>
                 <input id="homeTitleEn">
               </div>
+
               <div>
                 <label for="homeTitleAr">عنوان الرئيسية (عربي)</label>
                 <input id="homeTitleAr">
               </div>
+
               <div>
                 <label for="homeDescriptionEn">Home description (English)</label>
                 <textarea id="homeDescriptionEn"></textarea>
               </div>
+
               <div>
                 <label for="homeDescriptionAr">وصف الرئيسية (عربي)</label>
                 <textarea id="homeDescriptionAr"></textarea>
               </div>
 
-              <div class="wide"><h3 data-en="About Page" data-ar="صفحة من نحن">About Page</h3></div>
+              <div class="wide">
+                <h3 data-en="About Page" data-ar="صفحة من نحن">About Page</h3>
+              </div>
+
               <div>
                 <label for="aboutTitleEn">About title (English)</label>
                 <input id="aboutTitleEn">
               </div>
+
               <div>
                 <label for="aboutTitleAr">عنوان من نحن (عربي)</label>
                 <input id="aboutTitleAr">
               </div>
+
               <div>
                 <label for="aboutDescriptionEn">About description (English)</label>
                 <textarea id="aboutDescriptionEn"></textarea>
               </div>
+
               <div>
                 <label for="aboutDescriptionAr">وصف من نحن (عربي)</label>
                 <textarea id="aboutDescriptionAr"></textarea>
               </div>
 
-              <div class="wide"><h3 data-en="Contact Page" data-ar="صفحة التواصل">Contact Page</h3></div>
+              <div class="wide">
+                <h3 data-en="Contact Page" data-ar="صفحة التواصل">Contact Page</h3>
+              </div>
+
               <div>
                 <label for="contactTitleEn">Contact title (English)</label>
                 <input id="contactTitleEn">
               </div>
+
               <div>
                 <label for="contactTitleAr">عنوان التواصل (عربي)</label>
                 <input id="contactTitleAr">
               </div>
+
               <div>
                 <label for="contactDescriptionEn">Contact description (English)</label>
                 <textarea id="contactDescriptionEn"></textarea>
               </div>
+
               <div>
                 <label for="contactDescriptionAr">وصف التواصل (عربي)</label>
                 <textarea id="contactDescriptionAr"></textarea>
               </div>
+
             </div>
+
             <div class="form-actions">
-              <button class="primary-btn" type="submit" id="saveContentButton" data-en="Save Website Content" data-ar="حفظ محتوى الموقع">Save Website Content</button>
-              <button class="secondary-btn" type="button" id="reloadContentButton" data-en="Reload" data-ar="إعادة تحميل">Reload</button>
+              <button class="primary-btn"
+                      type="submit"
+                      id="saveContentButton"
+                      data-en="Save Website Content"
+                      data-ar="حفظ محتوى الموقع">
+                Save Website Content
+              </button>
+
+              <button class="secondary-btn"
+                      type="button"
+                      id="reloadContentButton"
+                      data-en="Reload"
+                      data-ar="إعادة تحميل">
+                Reload
+              </button>
             </div>
           </form>
         </div>
       </section>
+
     </main>
   </div>
 
