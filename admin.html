@@ -580,8 +580,37 @@ select:focus {
           <form id="teamForm">
             <input type="hidden" id="teamId">
 
-            <div class="form-grid">
-              <div>
+           <div class="form-grid">
+  <div>
+    <label for="memberNameEn">Full Name (English)</label>
+    <input id="memberNameEn" required placeholder="e.g. Adam Hussein">
+  </div>
+
+  <div>
+    <label for="memberNameAr">الاسم بالعربي</label>
+    <input id="memberNameAr" required placeholder="مثال: آدم حسين">
+  </div>
+
+  <div>
+    <label for="memberRoleEn">Role (English)</label>
+    <input id="memberRoleEn" required placeholder="e.g. Co-Leader">
+  </div>
+
+  <div>
+    <label for="memberRoleAr">الوظيفة بالعربي</label>
+    <input id="memberRoleAr" required placeholder="مثال: نائب قائد الفريق">
+  </div>
+
+  <div>
+    <label for="memberDepartment">Department</label>
+    <input id="memberDepartment" required placeholder="e.g. Programming">
+  </div>
+
+  <div>
+    <label for="memberInitials">Initials</label>
+    <input id="memberInitials" maxlength="4" placeholder="e.g. AH">
+  </div>
+</div>
                 <label for="memberName">Full Name</label>
                 <input id="memberName" required placeholder="Member name">
               </div>
