@@ -1264,3 +1264,33 @@ button:focus,
     outline-color: #68452F !important;
     box-shadow: none !important;
 }
+/* Improve text readability and spacing */
+body {
+    line-height: 1.8 !important;
+    letter-spacing: 0 !important;
+    word-spacing: 2px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.6 !important;
+    letter-spacing: 0 !important;
+    word-spacing: 2px;
+}
+
+p, span, a, li, label, button {
+    line-height: 1.8 !important;
+    letter-spacing: 0 !important;
+    overflow-wrap: break-word;
+}
+
+/* Keep buttons readable */
+button, .btn, .button {
+    padding: 12px 22px;
+    white-space: normal;
+}
+
+/* Arabic text */
+[dir="rtl"] {
+    line-height: 2 !important;
+    word-spacing: 3px;
+}
