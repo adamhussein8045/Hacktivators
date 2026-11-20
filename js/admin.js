@@ -1,4 +1,3 @@
-
 import { auth, db } from "./firebase.js";
 
 import {
@@ -60,6 +59,203 @@ const pageTitle = document.getElementById("pageTitle");
 
 let unsubscribeTeam = null;
 let unsubscribeEvents = null;
+
+// ========================================
+// Arabic / English Language System
+// ========================================
+
+const translations = {
+  "HACKTIVATORS.": "HACKTIVATORS.",
+  "Official Website Administration": "إدارة الموقع الرسمي",
+  "Admin Login": "تسجيل دخول المسؤول",
+  "Email Address": "البريد الإلكتروني",
+  "Password": "كلمة المرور",
+  "Sign In": "تسجيل الدخول",
+  "Signing in...": "جاري تسجيل الدخول...",
+  "Access denied. This account is not an authorized admin.": "تم رفض الدخول. هذا الحساب غير مصرح له بالدخول.",
+  "Incorrect email or password.": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "Please enter a valid email.": "من فضلك أدخل بريدًا إلكترونيًا صحيحًا.",
+  "Too many attempts. Try again later.": "محاولات كثيرة. حاول مرة أخرى لاحقًا.",
+  "Network error. Check your internet.": "مشكلة في الاتصال. تحقق من الإنترنت.",
+  "Login failed. Please try again.": "فشل تسجيل الدخول. حاول مرة أخرى.",
+  "MAIN MENU": "القائمة الرئيسية",
+  "Team Management": "إدارة الفريق",
+  "Events Management": "إدارة الفعاليات",
+  "Social Links": "روابط التواصل",
+  "Website Content": "محتوى الموقع",
+  "Sign Out": "تسجيل الخروج",
+  "Dashboard": "لوحة التحكم",
+  "Manage your Hacktivators website.": "تحكم في موقع Hacktivators.",
+  "Connecting...": "جاري الاتصال...",
+  "● Firebase Connected": "● متصل بـ Firebase",
+  "Connection error": "خطأ في الاتصال",
+  "Add Team Member": "إضافة عضو للفريق",
+  "Edit Team Member": "تعديل عضو الفريق",
+  "Add a new member or edit an existing one.": "أضف عضوًا جديدًا أو عدّل بيانات عضو موجود.",
+  "Full Name": "الاسم بالكامل",
+  "Member name": "اسم العضو",
+  "Role": "الدور",
+  "e.g. Co-Leader": "مثال: نائب القائد",
+  "Department": "القسم",
+  "e.g. Programming": "مثال: البرمجة",
+  "Initials": "الأحرف الأولى",
+  "Save Member": "حفظ العضو",
+  "Saving...": "جاري الحفظ...",
+  "Update Member": "تحديث العضو",
+  "Clear Form": "مسح النموذج",
+  "Team Members": "أعضاء الفريق",
+  "Members currently stored in Firebase.": "الأعضاء المسجلون حاليًا في Firebase.",
+  "Loading team members...": "جاري تحميل أعضاء الفريق...",
+  "No team members found in Firebase yet.": "لم يتم العثور على أعضاء في Firebase حتى الآن.",
+  "Edit": "تعديل",
+  "Delete": "حذف",
+  "Member not found.": "لم يتم العثور على العضو.",
+  "Team member updated successfully.": "تم تحديث بيانات العضو بنجاح.",
+  "Team member added successfully.": "تمت إضافة العضو بنجاح.",
+  "Team member deleted successfully.": "تم حذف العضو بنجاح.",
+  "Could not save member. Check your Firebase permissions.": "تعذر حفظ العضو. تحقق من صلاحيات Firebase.",
+  "Could not load member details.": "تعذر تحميل بيانات العضو.",
+  "Could not delete member.": "تعذر حذف العضو.",
+  "Please fill in all required member fields.": "من فضلك أكمل جميع الحقول المطلوبة للعضو.",
+  "Are you sure you want to delete this member?": "هل أنت متأكد أنك تريد حذف هذا العضو؟",
+  "Events": "الفعاليات",
+  "Add Event": "إضافة فعالية",
+  "Edit Event": "تعديل الفعالية",
+  "Create or update a Hacktivators event.": "أنشئ فعالية جديدة أو عدّل فعالية موجودة.",
+  "Event Title": "عنوان الفعالية",
+  "Event name": "اسم الفعالية",
+  "Event Date": "تاريخ الفعالية",
+  "Status": "الحالة",
+  "Upcoming": "قادمة",
+  "Completed": "مكتملة",
+  "Topics": "الموضوعات",
+  "One topic per line": "اكتب كل موضوع في سطر",
+  "Description": "الوصف",
+  "Event description": "وصف الفعالية",
+  "Save Event": "حفظ الفعالية",
+  "Update Event": "تحديث الفعالية",
+  "Events currently stored in Firebase.": "الفعاليات المسجلة حاليًا في Firebase.",
+  "Loading events...": "جاري تحميل الفعاليات...",
+  "No events found in Firebase yet.": "لم يتم العثور على فعاليات في Firebase حتى الآن.",
+  "Untitled event": "فعالية بدون عنوان",
+  "Event updated successfully.": "تم تحديث الفعالية بنجاح.",
+  "Event added successfully.": "تمت إضافة الفعالية بنجاح.",
+  "Event deleted successfully.": "تم حذف الفعالية بنجاح.",
+  "Could not save event. Check your Firebase permissions.": "تعذر حفظ الفعالية. تحقق من صلاحيات Firebase.",
+  "Could not load event details.": "تعذر تحميل بيانات الفعالية.",
+  "Could not delete event.": "تعذر حذف الفعالية.",
+  "Please complete all event fields and add at least one topic.": "من فضلك أكمل بيانات الفعالية وأضف موضوعًا واحدًا على الأقل.",
+  "Are you sure you want to delete this event?": "هل أنت متأكد أنك تريد حذف هذه الفعالية؟",
+  "Social Links": "روابط التواصل",
+  "This section will be connected in the next stage.": "سيتم تفعيل هذا القسم في المرحلة القادمة.",
+  "Could not load team members. Check Firestore rules.": "تعذر تحميل أعضاء الفريق. تحقق من قواعد Firestore.",
+  "Could not load events. Check Firestore rules.": "تعذر تحميل الفعاليات. تحقق من قواعد Firestore.",
+  "Could not sign out. Please try again.": "تعذر تسجيل الخروج. حاول مرة أخرى.",
+  "Original data imported successfully:": "تم استيراد البيانات الأصلية بنجاح:",
+  "members and": "أعضاء و",
+  "events.": "فعاليات.",
+  "Could not import original data. Check Firebase permissions.": "تعذر استيراد البيانات الأصلية. تحقق من صلاحيات Firebase.",
+  "Initials:": "الأحرف الأولى:",
+  "Member of": "عضو في"
+};
+
+const reverseTranslations = Object.fromEntries(
+  Object.entries(translations).map(([english, arabic]) => [arabic, english])
+);
+
+let currentLanguage = localStorage.getItem("hacktivators_admin_language") || "en";
+
+function translateText(text, language) {
+  const trimmed = text.trim();
+
+  if (!trimmed) return text;
+
+  if (language === "ar") {
+    if (translations[trimmed]) {
+      return text.replace(trimmed, translations[trimmed]);
+    }
+
+    // Translate text containing a dynamic value.
+    if (trimmed.startsWith("Initials: ")) {
+      return text.replace("Initials:", "الأحرف الأولى:");
+    }
+
+    return text;
+  }
+
+  if (reverseTranslations[trimmed]) {
+    return text.replace(trimmed, reverseTranslations[trimmed]);
+  }
+
+  if (trimmed.startsWith("الأحرف الأولى: ")) {
+    return text.replace("الأحرف الأولى:", "Initials:");
+  }
+
+  return text;
+}
+
+function applyLanguage(language) {
+  currentLanguage = language;
+
+  localStorage.setItem("hacktivators_admin_language", language);
+
+  document.documentElement.lang = language;
+  document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+
+  // Translate all visible text nodes.
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT
+  );
+
+  let node;
+
+  while ((node = walker.nextNode())) {
+    node.textContent = translateText(node.textContent, language);
+  }
+
+  // Translate placeholders.
+  document.querySelectorAll("[placeholder]").forEach(element => {
+    element.placeholder = translateText(element.placeholder, language);
+  });
+
+  // Translate document title.
+  document.title = language === "ar"
+    ? "Hacktivators | لوحة تحكم الإدارة"
+    : "Hacktivators | Admin Dashboard";
+
+  // Update language buttons.
+  document.getElementById("adminArabic").classList.toggle(
+    "active",
+    language === "ar"
+  );
+
+  document.getElementById("adminEnglish").classList.toggle(
+    "active",
+    language === "en"
+  );
+}
+
+document.getElementById("adminArabic").addEventListener("click", () => {
+  applyLanguage("ar");
+});
+
+document.getElementById("adminEnglish").addEventListener("click", () => {
+  applyLanguage("en");
+});
+
+// Apply the saved language when the dashboard opens.
+applyLanguage(currentLanguage);
+
+// Translate new elements added dynamically by Firebase.
+const languageObserver = new MutationObserver(() => {
+  applyLanguage(currentLanguage);
+});
+
+languageObserver.observe(document.body, {
+  childList: true,
+  subtree: true
+});
 
 // Security and display helpers
 function escapeHTML(value = "") {
