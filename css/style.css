@@ -1273,3 +1273,46 @@ button, .btn, .button {
     line-height: 2 !important;
     word-spacing: 3px;
 }
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.back-home-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  background: #FFFFFF;
+  color: #68452F;
+  border: 1px solid #68452F;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: 'Aref Ruqaa', serif;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.back-home-btn:hover {
+  background: #68452F;
+  color: #FFFFFF;
+}
+
+.admin-header-actions button {
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .admin-header-actions {
+    width: 100%;
+  }
+
+  .back-home-btn,
+  .admin-header-actions button {
+    flex: 1;
+  }
+}
