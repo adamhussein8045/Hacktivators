@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,15 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#071426">
   <title>Hacktivators | Admin Dashboard</title>
-<div class="admin-language-switch">
-  <button type="button" id="adminArabic" class="active">
-    🇪🇬 العربية
-  </button>
 
-  <button type="button" id="adminEnglish">
-    🇬🇧 English
-  </button>
-</div>
   <style>
     * {
       box-sizing: border-box;
@@ -341,6 +332,71 @@
         padding: 25px;
       }
     }
+    .topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.admin-language-switch {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-language-switch button {
+  padding: 9px 13px;
+  border: 1px solid #00D9F5;
+  border-radius: 9px;
+  color: #00D9F5;
+  background: #071426;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.admin-language-switch button.active,
+.admin-language-switch button:hover {
+  color: #071426;
+  background: #00D9F5;
+}
+
+html[dir="rtl"] body {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] .sidebar {
+  border-right: 0;
+  border-left: 1px solid #18344e;
+}
+
+html[dir="rtl"] .nav-btn {
+  text-align: right;
+}
+
+html[dir="rtl"] .item {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-actions,
+html[dir="rtl"] .item-actions {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .admin-language-switch {
+  direction: ltr;
+}
+
+@media (max-width: 800px) {
+  .topbar-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  html[dir="rtl"] .sidebar {
+    border-left: 0;
+  }
+}
   </style>
 </head>
 
@@ -393,7 +449,14 @@
           <h1 id="pageTitle">Team Management</h1>
           <p class="muted">Manage your Hacktivators website.</p>
         </div>
-        <span class="muted" id="connectionStatus">Connecting...</span>
+      <div class="topbar-actions">
+  <div class="admin-language-switch">
+    <button type="button" id="adminArabic">🇪🇬 العربية</button>
+    <button type="button" id="adminEnglish">🇬🇧 English</button>
+  </div>
+
+  <span class="muted" id="connectionStatus">Connecting...</span>
+</div>
       </header>
 
       <div id="globalMessage" class="notice hidden" role="status"></div>
