@@ -18,54 +18,38 @@ if (container) {
       "'": "&#39;"
     })[character]);
 
-  function formatDate(value) {
-    if (!value) return "";
-
-    const date = new Date(`${value}T00:00:00`);
-
-    if (Number.isNaN(date.getTime())) {
-      return escapeHTML(value);
-    }
-
-    return new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    }).format(date);
-  }
-
   function renderEvents(events) {
     if (!events.length) {
-      container.innerHTML = `
-        <p class="events-empty">
-          No events available right now.
-        </p>
-      `;
+      container.innerHTML = "<p>No events available right now.</p>";
       return;
     }
 
     container.innerHTML = events.map((event) => {
-      const title = escapeHTML(event.title || "Untitled event");
-      const description = escapeHTML(event.description || "");
-      const date = formatDate(event.date);
-      const status = escapeHTML(event.status || "Upcoming");
-
-      const topics = Array.isArray(event.topics)
-        ? event.topics
-        : [];
-
-      const topicsHTML = topics.map((topic) => `
-        <span class="event-topic">${escapeHTML(topic)}</span>
-      `).join("");
+      const topics = Array.isArray(event.topics) ? event.topics : [];
+      const status = event.status || "Upcoming";
+      const date = event.date || "";
 
       return `
         <article class="event-card">
-          <div class="event-card-content">
-            <span class="event-status">${status}</span>
-            <h3>${title}</h3>
-            <p class="event-date">${date}</p>
-            <p class="event-description">${description}</p>
-            <div class="event-topics">${topicsHTML}</div>
+          <div class="event-top">
+            <span class="event-date">${escapeHTML(date)}</span>
+            <span class="event-status ${status.toLowerCase() === "upcoming" ? "upcoming" : ""}">
+              ${escapeHTML(status)}
+            </span>
+          </div>
+
+          <h2>${escapeHTML(event.title || "Untitled event")}</h2>
+
+          <p class="event-description">
+            ${escapeHTML(event.description || "")}
+          </p>
+
+          <div class="event-topics">
+            ${topics.map((topic) => `
+              <div class="topic">
+                <h3>${escapeHTML(topic)}</h3>
+              </div>
+            `).join("")}
           </div>
         </article>
       `;
@@ -77,23 +61,11 @@ if (container) {
     orderBy("date", "asc")
   );
 
-  onSnapshot(
-    eventsQuery,
-    (snapshot) => {
-      const events = snapshot.docs.map((item) => ({
-        id: item.id,
-        ...item.data()
-      }));
-
-      renderEvents(events);
-    },
-    (error) => {
-      console.error("Could not load events:", error);
-      container.innerHTML = `
-        <p class="events-error">
-          Could not load events. Please try again later.
-        </p>
-      `;
-    }
-  );
+  onSnapshot(eventsQuery, (snapshot) => {
+    const events = snapshot.docs.map((item) => item.data());
+    renderEvents(events);
+  }, (error) => {
+    console.error("Events loading error:", error);
+    container.innerHTML = "<p>Unable to load events.</p>";
+  });
 }
