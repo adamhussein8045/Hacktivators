@@ -1,3 +1,4 @@
+
 import { db } from "./firebase.js";
 import {
   doc,
@@ -7,12 +8,16 @@ import {
 
 const LANGUAGE_KEY = "hacktivators-language";
 
+const contentCache = {};
+
 function getLanguage() {
   return localStorage.getItem(LANGUAGE_KEY) === "ar" ? "ar" : "en";
 }
 
-function getField(data, field, language) {
-  const translatedField = `${field}${language === "ar" ? "Ar" : "En"}`;
+function getText(data, field) {
+  const language = getLanguage();
+  const translatedField = field + (language === "ar" ? "Ar" : "En");
+
   return data?.[translatedField] || data?.[field] || "";
 }
 
@@ -24,56 +29,54 @@ function updateText(selector, value) {
   }
 }
 
-// الصفحة الرئيسية
-function applyHomeContent(data) {
-  const language = getLanguage();
+function applyPageContent() {
+  const page = location.pathname.split("/").pop();
 
-  updateText(".home-hero .home-title", getField(data, "title", language));
-  updateText(
-    ".home-hero .home-description",
-    getField(data, "description", language)
-  );
+  if (page === "" || page === "index.html") {
+    const home = contentCache.home_page;
+    const contact = contentCache.contact_page;
+
+    if (home) {
+      updateText(".home-hero .home-title", getText(home, "title"));
+      updateText(".home-hero .home-description", getText(home, "description"));
+    }
+
+    if (contact) {
+      updateText(".home-contact-content h2", getText(contact, "title"));
+      updateText(
+        ".home-contact-content .home-description",
+        getText(contact, "description")
+      );
+    }
+  }
+
+  if (page === "about.html") {
+    const about = contentCache.about_page;
+
+    if (about) {
+      updateText(".hero-content h1", getText(about, "title"));
+      updateText(".hero-content > p:not(.eyebrow)", getText(about, "description"));
+    }
+  }
 }
 
-// صفحة About
-function applyAboutContent(data) {
-  const language = getLanguage();
-
-  updateText(".hero-content h1", getField(data, "title", language));
-  updateText(".hero-content p", getField(data, "description", language));
-}
-
-// قسم التواصل في الصفحة الرئيسية
-function applyContactContent(data) {
-  const language = getLanguage();
-
-  updateText(
-    ".home-contact-content h2",
-    getField(data, "title", language)
-  );
-
-  updateText(
-    ".home-contact-content .home-description",
-    getField(data, "description", language)
-  );
-}
-
-function listenToPageContent(documentId, callback) {
+function listenToContent(documentId) {
   onSnapshot(
     doc(db, "site_content", documentId),
     (snapshot) => {
       if (snapshot.exists()) {
-        callback(snapshot.data());
+        contentCache[documentId] = snapshot.data();
+        applyPageContent();
       }
     },
     (error) => {
-      console.error(`Error loading ${documentId}:`, error);
+      console.error("Content loading error:", error);
     }
   );
 }
 
 function listenToSocialLinks() {
-  const socialLinks = {
+  const selectors = {
     instagram: ".social-card[href*='instagram.com']",
     tiktok: ".social-card[href*='tiktok.com']",
     facebook: ".social-card[href*='facebook.com']",
@@ -84,57 +87,53 @@ function listenToSocialLinks() {
   onSnapshot(
     collection(db, "social_links"),
     (snapshot) => {
-      snapshot.forEach((documentSnapshot) => {
-        const id = documentSnapshot.id;
-        const data = documentSnapshot.data();
-        const selector = socialLinks[id];
+      snapshot.forEach((item) => {
+        const id = item.id;
+        const data = item.data();
+        const element = document.querySelector(selectors[id]);
 
-        if (!selector) return;
-
-        const element = document.querySelector(selector);
         if (!element) return;
 
-        const enabled = data.enabled !== false;
-        element.hidden = !enabled;
+        element.hidden = data.enabled === false;
+
+        if (!data.url) return;
 
         if (id === "email") {
-          const email = data.url || data.email || "";
-          if (email) {
-            element.href = email.startsWith("mailto:")
-              ? email
-              : `mailto:${email}`;
-          }
-        } else if (data.url) {
+          element.href = data.url.startsWith("mailto:")
+            ? data.url
+            : `mailto:${data.url}`;
+        } else {
           element.href = data.url;
         }
       });
     },
     (error) => {
-      console.error("Error loading social links:", error);
+      console.error("Social links loading error:", error);
     }
   );
 }
 
-function startLiveContent() {
-  const page = window.location.pathname.split("/").pop();
+function start() {
+  const page = location.pathname.split("/").pop();
 
   if (page === "" || page === "index.html") {
-    listenToPageContent("home_page", applyHomeContent);
-    listenToPageContent("contact_page", applyContactContent);
+    listenToContent("home_page");
+    listenToContent("contact_page");
   }
 
   if (page === "about.html") {
-    listenToPageContent("about_page", applyAboutContent);
+    listenToContent("about_page");
   }
 
   listenToSocialLinks();
+
+  const languageButton = document.getElementById("languageToggle");
+
+  if (languageButton) {
+    languageButton.addEventListener("click", () => {
+      setTimeout(applyPageContent, 100);
+    });
+  }
 }
 
-startLiveContent();
-
-// إعادة تطبيق اللغة عند تغييرها من نفس الصفحة
-window.addEventListener("storage", (event) => {
-  if (event.key === LANGUAGE_KEY) {
-    window.location.reload();
-  }
-});
+start();
