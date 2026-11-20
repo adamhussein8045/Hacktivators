@@ -1,3 +1,4 @@
+
 import { auth, db } from "./firebase.js";
 
 import {
@@ -10,6 +11,7 @@ import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
   updateDoc,
   deleteDoc,
   doc,
@@ -19,53 +21,74 @@ import {
   orderBy
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
-// Only this Firebase UID is authorized to use the dashboard.
+// Only this Firebase UID is authorized.
 const ADMIN_UID = "t09cS5GynEfyM6AbNGeiCzzwEGI2";
 
-// Elements
-const loginPanel = document.getElementById("loginPanel");
-const dashboard = document.getElementById("dashboard");
-const loginForm = document.getElementById("loginForm");
-const loginButton = document.getElementById("loginButton");
-const loginMessage = document.getElementById("loginMessage");
-const logoutButton = document.getElementById("logoutButton");
+// ========================================
+// DOM ELEMENTS
+// ========================================
 
-const teamForm = document.getElementById("teamForm");
-const teamList = document.getElementById("teamList");
-const teamId = document.getElementById("teamId");
-const memberName = document.getElementById("memberName");
-const memberRole = document.getElementById("memberRole");
-const memberDepartment = document.getElementById("memberDepartment");
-const memberInitials = document.getElementById("memberInitials");
-const teamFormTitle = document.getElementById("teamFormTitle");
-const saveMemberButton = document.getElementById("saveMemberButton");
-const cancelMemberEdit = document.getElementById("cancelMemberEdit");
+const $ = id => document.getElementById(id);
 
-const eventForm = document.getElementById("eventForm");
-const eventsList = document.getElementById("eventsList");
-const eventId = document.getElementById("eventId");
-const eventTitle = document.getElementById("eventTitle");
-const eventDate = document.getElementById("eventDate");
-const eventStatus = document.getElementById("eventStatus");
-const eventTopics = document.getElementById("eventTopics");
-const eventDescription = document.getElementById("eventDescription");
-const eventFormTitle = document.getElementById("eventFormTitle");
-const saveEventButton = document.getElementById("saveEventButton");
-const cancelEventEdit = document.getElementById("cancelEventEdit");
+const loginPanel = $("loginPanel");
+const dashboard = $("dashboard");
+const loginForm = $("loginForm");
+const loginButton = $("loginButton");
+const loginMessage = $("loginMessage");
+const logoutButton = $("logoutButton");
 
-const connectionStatus = document.getElementById("connectionStatus");
-const globalMessage = document.getElementById("globalMessage");
-const pageTitle = document.getElementById("pageTitle");
+const teamForm = $("teamForm");
+const teamList = $("teamList");
+const teamId = $("teamId");
+
+const memberNameEn = $("memberNameEn");
+const memberNameAr = $("memberNameAr");
+const memberRoleEn = $("memberRoleEn");
+const memberRoleAr = $("memberRoleAr");
+const memberDepartment = $("memberDepartment");
+const memberInitials = $("memberInitials");
+
+const teamFormTitle = $("teamFormTitle");
+const saveMemberButton = $("saveMemberButton");
+const cancelMemberEdit = $("cancelMemberEdit");
+
+const eventForm = $("eventForm");
+const eventsList = $("eventsList");
+const eventId = $("eventId");
+const eventTitle = $("eventTitle");
+const eventDate = $("eventDate");
+const eventStatus = $("eventStatus");
+const eventTopics = $("eventTopics");
+const eventDescription = $("eventDescription");
+const eventFormTitle = $("eventFormTitle");
+const saveEventButton = $("saveEventButton");
+const cancelEventEdit = $("cancelEventEdit");
+
+const connectionStatus = $("connectionStatus");
+const globalMessage = $("globalMessage");
+const pageTitle = $("pageTitle");
+
+const arabicButton = $("adminArabic");
+const englishButton = $("adminEnglish");
 
 let unsubscribeTeam = null;
 let unsubscribeEvents = null;
 
+let latestTeamDocs = [];
+let latestEventsDocs = [];
+
+let currentLanguage =
+  localStorage.getItem("hacktivators_admin_language") || "en";
+
+if (!["ar", "en"].includes(currentLanguage)) {
+  currentLanguage = "en";
+}
+
 // ========================================
-// Arabic / English Language System
+// TRANSLATIONS
 // ========================================
 
 const translations = {
-  "HACKTIVATORS.": "HACKTIVATORS.",
   "Official Website Administration": "إدارة الموقع الرسمي",
   "Admin Login": "تسجيل دخول المسؤول",
   "Email Address": "البريد الإلكتروني",
@@ -84,7 +107,6 @@ const translations = {
   "Social Links": "روابط التواصل",
   "Website Content": "محتوى الموقع",
   "Sign Out": "تسجيل الخروج",
-  "Dashboard": "لوحة التحكم",
   "Manage your Hacktivators website.": "تحكم في موقع Hacktivators.",
   "Connecting...": "جاري الاتصال...",
   "● Firebase Connected": "● متصل بـ Firebase",
@@ -92,12 +114,11 @@ const translations = {
   "Add Team Member": "إضافة عضو للفريق",
   "Edit Team Member": "تعديل عضو الفريق",
   "Add a new member or edit an existing one.": "أضف عضوًا جديدًا أو عدّل بيانات عضو موجود.",
-  "Full Name": "الاسم بالكامل",
-  "Member name": "اسم العضو",
-  "Role": "الدور",
-  "e.g. Co-Leader": "مثال: نائب القائد",
+  "Full Name (English)": "الاسم بالكامل (إنجليزي)",
+  "الاسم بالعربي": "الاسم بالعربي",
+  "Role (English)": "الوظيفة (إنجليزي)",
+  "الوظيفة بالعربي": "الوظيفة بالعربي",
   "Department": "القسم",
-  "e.g. Programming": "مثال: البرمجة",
   "Initials": "الأحرف الأولى",
   "Save Member": "حفظ العضو",
   "Saving...": "جاري الحفظ...",
@@ -123,15 +144,12 @@ const translations = {
   "Edit Event": "تعديل الفعالية",
   "Create or update a Hacktivators event.": "أنشئ فعالية جديدة أو عدّل فعالية موجودة.",
   "Event Title": "عنوان الفعالية",
-  "Event name": "اسم الفعالية",
   "Event Date": "تاريخ الفعالية",
   "Status": "الحالة",
   "Upcoming": "قادمة",
   "Completed": "مكتملة",
   "Topics": "الموضوعات",
-  "One topic per line": "اكتب كل موضوع في سطر",
   "Description": "الوصف",
-  "Event description": "وصف الفعالية",
   "Save Event": "حفظ الفعالية",
   "Update Event": "تحديث الفعالية",
   "Events currently stored in Firebase.": "الفعاليات المسجلة حاليًا في Firebase.",
@@ -146,7 +164,6 @@ const translations = {
   "Could not delete event.": "تعذر حذف الفعالية.",
   "Please complete all event fields and add at least one topic.": "من فضلك أكمل بيانات الفعالية وأضف موضوعًا واحدًا على الأقل.",
   "Are you sure you want to delete this event?": "هل أنت متأكد أنك تريد حذف هذه الفعالية؟",
-  "Social Links": "روابط التواصل",
   "This section will be connected in the next stage.": "سيتم تفعيل هذا القسم في المرحلة القادمة.",
   "Could not load team members. Check Firestore rules.": "تعذر تحميل أعضاء الفريق. تحقق من قواعد Firestore.",
   "Could not load events. Check Firestore rules.": "تعذر تحميل الفعاليات. تحقق من قواعد Firestore.",
@@ -154,45 +171,34 @@ const translations = {
   "Original data imported successfully:": "تم استيراد البيانات الأصلية بنجاح:",
   "members and": "أعضاء و",
   "events.": "فعاليات.",
-  "Could not import original data. Check Firebase permissions.": "تعذر استيراد البيانات الأصلية. تحقق من صلاحيات Firebase.",
   "Initials:": "الأحرف الأولى:",
   "Member of": "عضو في"
 };
 
 const reverseTranslations = Object.fromEntries(
-  Object.entries(translations).map(([english, arabic]) => [arabic, english])
+  Object.entries(translations).map(([english, arabic]) => [
+    arabic,
+    english
+  ])
 );
-
-let currentLanguage = localStorage.getItem("hacktivators_admin_language") || "en";
 
 function translateText(text, language) {
   const trimmed = text.trim();
 
   if (!trimmed) return text;
 
-  if (language === "ar") {
-    if (translations[trimmed]) {
-      return text.replace(trimmed, translations[trimmed]);
-    }
+  const translated = language === "ar"
+    ? translations[trimmed]
+    : reverseTranslations[trimmed];
 
-    // Translate text containing a dynamic value.
-    if (trimmed.startsWith("Initials: ")) {
-      return text.replace("Initials:", "الأحرف الأولى:");
-    }
-
-    return text;
-  }
-
-  if (reverseTranslations[trimmed]) {
-    return text.replace(trimmed, reverseTranslations[trimmed]);
-  }
-
-  if (trimmed.startsWith("الأحرف الأولى: ")) {
-    return text.replace("الأحرف الأولى:", "Initials:");
-  }
-
-  return text;
+  return translated
+    ? text.replace(trimmed, translated)
+    : text;
 }
+
+// ========================================
+// LANGUAGE SYSTEM
+// ========================================
 
 function applyLanguage(language) {
   currentLanguage = language;
@@ -202,7 +208,6 @@ function applyLanguage(language) {
   document.documentElement.lang = language;
   document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
 
-  // Translate all visible text nodes.
   const walker = document.createTreeWalker(
     document.body,
     NodeFilter.SHOW_TEXT
@@ -214,50 +219,36 @@ function applyLanguage(language) {
     node.textContent = translateText(node.textContent, language);
   }
 
-  // Translate placeholders.
   document.querySelectorAll("[placeholder]").forEach(element => {
-    element.placeholder = translateText(element.placeholder, language);
+    element.placeholder = translateText(
+      element.placeholder,
+      language
+    );
   });
 
-  // Translate document title.
   document.title = language === "ar"
     ? "Hacktivators | لوحة تحكم الإدارة"
     : "Hacktivators | Admin Dashboard";
 
-  // Update language buttons.
-  document.getElementById("adminArabic").classList.toggle(
-    "active",
-    language === "ar"
-  );
+  arabicButton.classList.toggle("active", language === "ar");
+  englishButton.classList.toggle("active", language === "en");
 
-  document.getElementById("adminEnglish").classList.toggle(
-    "active",
-    language === "en"
-  );
+  renderTeamMembers();
+  renderEvents();
 }
 
-document.getElementById("adminArabic").addEventListener("click", () => {
+arabicButton.addEventListener("click", () => {
   applyLanguage("ar");
 });
 
-document.getElementById("adminEnglish").addEventListener("click", () => {
+englishButton.addEventListener("click", () => {
   applyLanguage("en");
 });
 
-// Apply the saved language when the dashboard opens.
-applyLanguage(currentLanguage);
+// ========================================
+// HELPERS
+// ========================================
 
-// Translate new elements added dynamically by Firebase.
-const languageObserver = new MutationObserver(() => {
-  applyLanguage(currentLanguage);
-});
-
-languageObserver.observe(document.body, {
-  childList: true,
-  subtree: true
-});
-
-// Security and display helpers
 function escapeHTML(value = "") {
   return String(value).replace(/[&<>"']/g, character => ({
     "&": "&amp;",
@@ -272,7 +263,9 @@ function showMessage(message, isError = false) {
   globalMessage.textContent = message;
   globalMessage.classList.remove("hidden");
 
-  globalMessage.style.color = isError ? "#ff9999" : "#a8eaff";
+  globalMessage.style.color = isError
+    ? "#a93248"
+    : "#68452f";
 
   window.scrollTo({
     top: 0,
@@ -309,9 +302,15 @@ function stopListeners() {
     unsubscribeEvents();
     unsubscribeEvents = null;
   }
+
+  latestTeamDocs = [];
+  latestEventsDocs = [];
 }
 
-// Navigation
+// ========================================
+// NAVIGATION
+// ========================================
+
 document.querySelectorAll(".nav-btn[data-section]").forEach(button => {
   button.addEventListener("click", () => {
     const section = button.dataset.section;
@@ -326,9 +325,7 @@ document.querySelectorAll(".nav-btn[data-section]").forEach(button => {
       item.classList.add("hidden");
     });
 
-    const selectedSection = document.getElementById(
-      `${section}Section`
-    );
+    const selectedSection = $(`${section}Section`);
 
     if (selectedSection) {
       selectedSection.classList.remove("hidden");
@@ -342,19 +339,27 @@ document.querySelectorAll(".nav-btn[data-section]").forEach(button => {
     };
 
     pageTitle.textContent = titles[section] || "Dashboard";
+
+    applyLanguage(currentLanguage);
     hideMessage();
   });
 });
 
-// Login
+// ========================================
+// LOGIN
+// ========================================
+
 loginForm.addEventListener("submit", async event => {
   event.preventDefault();
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+  const email = $("email").value.trim();
+  const password = $("password").value;
 
   loginButton.disabled = true;
-  loginButton.textContent = "Signing in...";
+  loginButton.textContent = currentLanguage === "ar"
+    ? "جاري تسجيل الدخول..."
+    : "Signing in...";
+
   loginMessage.textContent = "";
 
   try {
@@ -366,7 +371,12 @@ loginForm.addEventListener("submit", async event => {
 
     if (result.user.uid !== ADMIN_UID) {
       await signOut(auth);
-      showLogin("Access denied. This account is not an authorized admin.");
+
+      showLogin(
+        currentLanguage === "ar"
+          ? "تم رفض الدخول. هذا الحساب غير مصرح له بالدخول."
+          : "Access denied. This account is not an authorized admin."
+      );
     }
   } catch (error) {
     console.error("Login error:", error);
@@ -378,107 +388,282 @@ loginForm.addEventListener("submit", async event => {
       "auth/network-request-failed": "Network error. Check your internet."
     };
 
-    showLogin(messages[error.code] || "Login failed. Please try again.");
+    const message = messages[error.code] || "Login failed. Please try again.";
+
+    loginMessage.textContent = translateText(
+      message,
+      currentLanguage
+    );
   } finally {
     loginButton.disabled = false;
-    loginButton.textContent = "Sign In";
+
+    loginButton.textContent = currentLanguage === "ar"
+      ? "تسجيل الدخول"
+      : "Sign In";
   }
 });
 
+// ========================================
+// ORIGINAL TEAM DATA
+// ========================================
+
+const originalMembers = [
+  {
+    id: "celia-ahmed",
+    nameEn: "Celia Ahmed",
+    nameAr: "سيليا أحمد",
+    roleEn: "Leader Of Team",
+    roleAr: "قائدة الفريق",
+    department: "Leadership",
+    initials: "CA"
+  },
+  {
+    id: "omar-mohamed",
+    nameEn: "Omar Mohamed",
+    nameAr: "عمر محمد",
+    roleEn: "Co-Leader",
+    roleAr: "نائب قائد الفريق",
+    department: "Leadership",
+    initials: "OM"
+  },
+  {
+    id: "salma-emad",
+    nameEn: "Salma Emad",
+    nameAr: "سلمى عماد",
+    roleEn: "Co-Leader",
+    roleAr: "نائبة قائد الفريق",
+    department: "Leadership",
+    initials: "SE"
+  },
+  {
+    id: "logien-mohamed",
+    nameEn: "Logien Mohamed",
+    nameAr: "لوجين محمد",
+    roleEn: "Co-Leader",
+    roleAr: "نائبة قائد الفريق",
+    department: "Leadership",
+    initials: "LM"
+  },
+  {
+    id: "adam-hussein",
+    nameEn: "Adam Hussein",
+    nameAr: "آدم حسين",
+    roleEn: "Member Of Programming Department",
+    roleAr: "عضو بقسم البرمجة",
+    department: "Programming",
+    initials: "AH"
+  },
+  {
+    id: "youssef-khaled",
+    nameEn: "Youssef Khaled",
+    nameAr: "يوسف خالد",
+    roleEn: "Photographer",
+    roleAr: "مصور",
+    department: "Photography",
+    initials: "YK"
+  },
+  {
+    id: "lamar-abd-elmohsen",
+    nameEn: "Lamar Abd Elmohsen",
+    nameAr: "لمار عبد المحسن",
+    roleEn: "Photographer",
+    roleAr: "مصورة",
+    department: "Photography",
+    initials: "LA"
+  },
+  {
+    id: "saleen-ahmed",
+    nameEn: "Saleen Ahmed",
+    nameAr: "سالين أحمد",
+    roleEn: "Designer & Video Editor",
+    roleAr: "مصممة ومحررة فيديو",
+    department: "Design & Media",
+    initials: "SA"
+  },
+  {
+    id: "sagda-ahmed",
+    nameEn: "Sagda Ahmed",
+    nameAr: "سجدة أحمد",
+    roleEn: "Designer & Organizer",
+    roleAr: "مصممة ومنظمة",
+    department: "Design & Organization",
+    initials: "SA"
+  },
+  {
+    id: "omar-mostafa",
+    nameEn: "Omar Mostafa",
+    nameAr: "عمر مصطفى",
+    roleEn: "Member Of Programming Department",
+    roleAr: "عضو بقسم البرمجة",
+    department: "Programming",
+    initials: "OM"
+  },
+  {
+    id: "yassin-mohamed",
+    nameEn: "Yassin Mohamed",
+    nameAr: "ياسين محمد",
+    roleEn: "Member Of Programming Department",
+    roleAr: "عضو بقسم البرمجة",
+    department: "Programming",
+    initials: "YM"
+  },
+  {
+    id: "hana-ahmed",
+    nameEn: "Hana Ahmed",
+    nameAr: "هنا أحمد",
+    roleEn: "Designer",
+    roleAr: "مصممة",
+    department: "Design",
+    initials: "HA"
+  }
+];
+
+// ========================================
+// ORIGINAL EVENTS
+// ========================================
+
+const originalEvents = [
+  {
+    id: "event-27-october-2026",
+    title: "Discover Your Potential",
+    date: "2026-10-27",
+    status: "Completed",
+    description: "An introductory learning experience covering communication, creativity, programming, and game development.",
+    topics: [
+      "🧠 Emotional Intelligence",
+      "🎨 Design Basics",
+      "🧩 Block-Based Programming",
+      "🎮 Game Development"
+    ]
+  },
+  {
+    id: "event-12-november-2026",
+    title: "Creative Skills & Technology",
+    date: "2026-11-12",
+    status: "Completed",
+    description: "A practical learning experience introducing participants to video editing, programming, and game creation.",
+    topics: [
+      "🎬 Video Editing",
+      "💻 Block-Based Programming",
+      "🎮 Game Development"
+    ]
+  },
+  {
+    id: "event-23-november-2026",
+    title: "Presentation Skills & Technology Awareness",
+    date: "2026-11-23",
+    status: "Upcoming",
+    description: "An upcoming learning experience focused on presentation skills, computer hardware, and understanding artificial intelligence.",
+    topics: [
+      "🎤 Presentation Skills",
+      "🖥️ Inside a Computer",
+      "🤖 Understanding AI",
+      "⚠️ Technology Risks"
+    ]
+  }
+];
+
+// ========================================
+// IMPORT AND MIGRATE DATA
+// ========================================
+
 async function importOriginalData() {
-  const teamSnapshot = await getDocs(collection(db, "team_members"));
-  const eventsSnapshot = await getDocs(collection(db, "events"));
+  const teamSnapshot = await getDocs(
+    collection(db, "team_members")
+  );
 
-  const originalMembers = [
-    ["celia-ahmed", "Celia Ahmed", "Leader Of Team", "Team Leader", "CA"],
-    ["omar-mohamed", "Omar Mohamed", "Co-Leader", "Leadership", "OM"],
-    ["salma-emad", "Salma Emad", "Co-Leader", "Leadership", "SE"],
-    ["logien-mohamed", "Logien Mohamed", "Co-Leader", "Leadership", "LM"],
-    ["adam-hussein", "Adam Hussein", "Member Of Programming Department", "Programming", "AH"],
-    ["youssef-khaled", "Youssef Khaled", "Photographer", "Photography", "YK"],
-    ["lamar-abd-elmohsen", "Lamar Abd Elmohsen", "Photographer", "Photography", "LA"],
-    ["saleen-ahmed", "Saleen Ahmed", "Designer & Video Editor", "Design & Media", "SA"],
-    ["sagda-ahmed", "Sagda Ahmed", "Designer & Organizer", "Design & Organization", "SA"],
-    ["omar-mostafa", "Omar Mostafa", "Member Of Programming Department", "Programming", "OM"],
-    ["yassin-mohamed", "Yassin Mohamed", "Member Of Programming Department", "Programming", "YM"],
-    ["hana-ahmed", "Hana Ahmed", "Designer", "Design", "HA"]
-  ];
-
-  const originalEvents = [
-    {
-      id: "event-27-october-2026",
-      title: "Discover Your Potential",
-      date: "2026-10-27",
-      status: "Completed",
-      description: "An introductory learning experience covering communication, creativity, programming, and game development.",
-      topics: [
-        "🧠 Emotional Intelligence",
-        "🎨 Design Basics",
-        "🧩 Block-Based Programming",
-        "🎮 Game Development"
-      ]
-    },
-    {
-      id: "event-12-november-2026",
-      title: "Creative Skills & Technology",
-      date: "2026-11-12",
-      status: "Completed",
-      description: "A practical learning experience introducing participants to video editing, programming, and game creation.",
-      topics: [
-        "🎬 Video Editing",
-        "💻 Block-Based Programming",
-        "🎮 Game Development"
-      ]
-    },
-    {
-      id: "event-23-november-2026",
-      title: "Presentation Skills & Technology Awareness",
-      date: "2026-11-23",
-      status: "Upcoming",
-      description: "An upcoming learning experience focused on presentation skills, computer hardware, and understanding artificial intelligence.",
-      topics: [
-        "🎤 Presentation Skills",
-        "🖥️ Inside a Computer",
-        "🤖 Understanding AI",
-        "⚠️ Technology Risks"
-      ]
-    }
-  ];
+  const eventsSnapshot = await getDocs(
+    collection(db, "events")
+  );
 
   let importedMembers = 0;
   let importedEvents = 0;
 
-  // Import members only if the collection is empty.
+  // Initial team import.
   if (teamSnapshot.empty) {
     for (const member of originalMembers) {
-      const [id, name, role, department, initials] = member;
-
-      await setDoc(doc(db, "team_members", id), {
-        name,
-        role,
-        department,
-        initials
-      });
+      await setDoc(
+        doc(db, "team_members", member.id),
+        {
+          ...member,
+          name: member.nameEn,
+          role: member.roleEn
+        }
+      );
 
       importedMembers++;
     }
+  } else {
+    // One-time bilingual migration.
+    const migrationRef = doc(
+      db,
+      "site_content",
+      "team_bilingual_v1"
+    );
+
+    const migrationSnapshot = await getDoc(migrationRef);
+
+    if (!migrationSnapshot.exists()) {
+      for (const member of originalMembers) {
+        const memberRef = doc(
+          db,
+          "team_members",
+          member.id
+        );
+
+        const existing = await getDoc(memberRef);
+
+        if (!existing.exists()) continue;
+
+        const oldData = existing.data();
+
+        await setDoc(
+          memberRef,
+          {
+            nameEn: oldData.nameEn || oldData.name || member.nameEn,
+            nameAr: oldData.nameAr || member.nameAr,
+            roleEn: oldData.roleEn || oldData.role || member.roleEn,
+            roleAr: oldData.roleAr || member.roleAr,
+            name: oldData.name || member.nameEn,
+            role: oldData.role || member.roleEn
+          },
+          { merge: true }
+        );
+
+        importedMembers++;
+      }
+
+      await setDoc(migrationRef, {
+        completed: true,
+        completedAt: new Date().toISOString()
+      });
+    }
   }
 
-  // Import events only if the collection is empty.
+  // Initial events import.
   if (eventsSnapshot.empty) {
-    for (const event of originalEvents) {
-      const { id, ...data } = event;
+    for (const item of originalEvents) {
+      const { id, ...data } = item;
 
-      await setDoc(doc(db, "events", id), data);
+      await setDoc(
+        doc(db, "events", id),
+        data
+      );
 
       importedEvents++;
     }
   }
 
-  return { importedMembers, importedEvents };
+  return {
+    importedMembers,
+    importedEvents
+  };
 }
 
-// Authentication state
+// ========================================
+// AUTHENTICATION STATE
+// ========================================
+
 onAuthStateChanged(auth, async user => {
   stopListeners();
 
@@ -489,38 +674,53 @@ onAuthStateChanged(auth, async user => {
 
   if (user.uid !== ADMIN_UID) {
     await signOut(auth);
-    showLogin("Access denied. This account is not an authorized admin.");
+
+    showLogin(
+      currentLanguage === "ar"
+        ? "تم رفض الدخول. هذا الحساب غير مصرح له بالدخول."
+        : "Access denied. This account is not an authorized admin."
+    );
+
     return;
   }
 
-showDashboard();
-hideMessage();
+  showDashboard();
+  hideMessage();
 
-try {
-  const result = await importOriginalData();
+  try {
+    const result = await importOriginalData();
 
-  startTeamListener();
-  startEventsListener();
+    startTeamListener();
+    startEventsListener();
 
-  if (result.importedMembers || result.importedEvents) {
+    if (result.importedMembers || result.importedEvents) {
+      const message =
+        `Original data imported successfully: ${result.importedMembers} members and ${result.importedEvents} events.`;
+
+      showMessage(translateText(message, currentLanguage));
+    }
+  } catch (error) {
+    console.error("Initial data import error:", error);
+
+    startTeamListener();
+    startEventsListener();
+
     showMessage(
-      `Original data imported successfully: ${result.importedMembers} members and ${result.importedEvents} events.`
+      translateText(
+        "Could not import original data. Check Firebase permissions.",
+        currentLanguage
+      ),
+      true
     );
   }
-} catch (error) {
-  console.error("Initial data import error:", error);
 
-  startTeamListener();
-  startEventsListener();
-
-  showMessage(
-    "Could not import original data. Check Firebase permissions.",
-    true
-  );
-}
+  applyLanguage(currentLanguage);
 });
 
-// Logout
+// ========================================
+// LOGOUT
+// ========================================
+
 logoutButton.addEventListener("click", async () => {
   try {
     stopListeners();
@@ -528,13 +728,97 @@ logoutButton.addEventListener("click", async () => {
     showLogin();
   } catch (error) {
     console.error("Logout error:", error);
-    showMessage("Could not sign out. Please try again.", true);
+
+    showMessage(
+      translateText(
+        "Could not sign out. Please try again.",
+        currentLanguage
+      ),
+      true
+    );
   }
 });
 
-// Team: listen for Firestore changes
+// ========================================
+// TEAM: RENDER
+// ========================================
+
+function renderTeamMembers() {
+  if (!teamList) return;
+
+  if (!latestTeamDocs.length) {
+    teamList.innerHTML = `
+      <div class="empty">
+        ${currentLanguage === "ar"
+          ? "لم يتم العثور على أعضاء في Firebase حتى الآن."
+          : "No team members found in Firebase yet."}
+      </div>
+    `;
+
+    return;
+  }
+
+  teamList.innerHTML = latestTeamDocs.map(memberDoc => {
+    const member = memberDoc.data();
+    const id = escapeHTML(memberDoc.id);
+
+    const name = currentLanguage === "ar"
+      ? member.nameAr || member.name || ""
+      : member.nameEn || member.name || "";
+
+    const role = currentLanguage === "ar"
+      ? member.roleAr || member.role || ""
+      : member.roleEn || member.role || "";
+
+    return `
+      <article class="item">
+        <div class="item-info">
+          <h3>${escapeHTML(name || "Unnamed member")}</h3>
+
+          <p>
+            ${escapeHTML(role)}
+            ·
+            ${escapeHTML(member.department || "")}
+          </p>
+
+          <p>
+            ${currentLanguage === "ar" ? "الأحرف الأولى:" : "Initials:"}
+            ${escapeHTML(member.initials || "")}
+          </p>
+        </div>
+
+        <div class="item-actions">
+          <button
+            class="secondary-btn"
+            type="button"
+            data-action="edit-member"
+            data-id="${id}"
+          >${currentLanguage === "ar" ? "تعديل" : "Edit"}</button>
+
+          <button
+            class="danger-btn"
+            type="button"
+            data-action="delete-member"
+            data-id="${id}"
+          >${currentLanguage === "ar" ? "حذف" : "Delete"}</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+// ========================================
+// TEAM: FIRESTORE LISTENER
+// ========================================
+
 function startTeamListener() {
-  teamList.innerHTML = '<div class="empty">Loading team members...</div>';
+  teamList.innerHTML = `
+    <div class="empty">
+      ${currentLanguage === "ar"
+        ? "جاري تحميل أعضاء الفريق..."
+        : "Loading team members..."}
+    </div>
+  `;
 
   const teamQuery = query(
     collection(db, "team_members"),
@@ -544,79 +828,70 @@ function startTeamListener() {
   unsubscribeTeam = onSnapshot(
     teamQuery,
     snapshot => {
+      latestTeamDocs = snapshot.docs;
+
       connectionStatus.textContent = "● Firebase Connected";
-      connectionStatus.style.color = "#36e6ad";
+      connectionStatus.style.color = "#68452f";
 
-      if (snapshot.empty) {
-        teamList.innerHTML = `
-          <div class="empty">
-            No team members found in Firebase yet.
-          </div>
-        `;
-        return;
-      }
-
-      teamList.innerHTML = snapshot.docs.map(memberDoc => {
-        const member = memberDoc.data();
-        const id = escapeHTML(memberDoc.id);
-
-        return `
-          <article class="item">
-            <div class="item-info">
-              <h3>${escapeHTML(member.name || "Unnamed member")}</h3>
-              <p>
-                ${escapeHTML(member.role || "")}
-                ·
-                ${escapeHTML(member.department || "")}
-              </p>
-              <p>Initials: ${escapeHTML(member.initials || "")}</p>
-            </div>
-
-            <div class="item-actions">
-              <button
-                class="secondary-btn"
-                type="button"
-                data-action="edit-member"
-                data-id="${id}"
-              >Edit</button>
-
-              <button
-                class="danger-btn"
-                type="button"
-                data-action="delete-member"
-                data-id="${id}"
-              >Delete</button>
-            </div>
-          </article>
-        `;
-      }).join("");
+      renderTeamMembers();
     },
     error => {
       console.error("Team listener error:", error);
+
       connectionStatus.textContent = "Connection error";
-      showMessage("Could not load team members. Check Firestore rules.", true);
+
+      showMessage(
+        translateText(
+          "Could not load team members. Check Firestore rules.",
+          currentLanguage
+        ),
+        true
+      );
     }
   );
 }
 
-// Team: add or update
+// ========================================
+// TEAM: ADD OR UPDATE
+// ========================================
+
 teamForm.addEventListener("submit", async event => {
   event.preventDefault();
 
   const data = {
-    name: memberName.value.trim(),
-    role: memberRole.value.trim(),
+    nameEn: memberNameEn.value.trim(),
+    nameAr: memberNameAr.value.trim(),
+    roleEn: memberRoleEn.value.trim(),
+    roleAr: memberRoleAr.value.trim(),
+    name: memberNameEn.value.trim(),
+    role: memberRoleEn.value.trim(),
     department: memberDepartment.value.trim(),
     initials: memberInitials.value.trim().toUpperCase()
   };
 
-  if (!data.name || !data.role || !data.department) {
-    showMessage("Please fill in all required member fields.", true);
+  if (
+    !data.nameEn ||
+    !data.nameAr ||
+    !data.roleEn ||
+    !data.roleAr ||
+    !data.department
+  ) {
+    showMessage(
+      translateText(
+        "Please fill in all required member fields.",
+        currentLanguage
+      ),
+      true
+    );
+
     return;
   }
 
   saveMemberButton.disabled = true;
-  saveMemberButton.textContent = "Saving...";
+
+  saveMemberButton.textContent = currentLanguage === "ar"
+    ? "جاري الحفظ..."
+    : "Saving...";
 
   try {
     if (teamId.value) {
@@ -625,23 +900,50 @@ teamForm.addEventListener("submit", async event => {
         data
       );
 
-      showMessage("Team member updated successfully.");
+      showMessage(
+        translateText(
+          "Team member updated successfully.",
+          currentLanguage
+        )
+      );
     } else {
-      await addDoc(collection(db, "team_members"), data);
-      showMessage("Team member added successfully.");
+      await addDoc(
+        collection(db, "team_members"),
+        data
+      );
+
+      showMessage(
+        translateText(
+          "Team member added successfully.",
+          currentLanguage
+        )
+      );
     }
 
     resetTeamForm();
   } catch (error) {
     console.error("Save member error:", error);
-    showMessage("Could not save member. Check your Firebase permissions.", true);
+
+    showMessage(
+      translateText(
+        "Could not save member. Check your Firebase permissions.",
+        currentLanguage
+      ),
+      true
+    );
   } finally {
     saveMemberButton.disabled = false;
-    saveMemberButton.textContent = "Save Member";
+
+    saveMemberButton.textContent = currentLanguage === "ar"
+      ? "حفظ العضو"
+      : "Save Member";
   }
 });
 
-// Team: edit or delete
+// ========================================
+// TEAM: EDIT OR DELETE
+// ========================================
+
 teamList.addEventListener("click", async event => {
   const button = event.target.closest("button[data-action]");
 
@@ -652,59 +954,184 @@ teamList.addEventListener("click", async event => {
 
   if (action === "edit-member") {
     try {
-      const snapshot = await getDocs(collection(db, "team_members"));
-      const selected = snapshot.docs.find(item => item.id === id);
+      const selected = latestTeamDocs.find(
+        item => item.id === id
+      );
 
       if (!selected) {
-        showMessage("Member not found.", true);
+        showMessage(
+          translateText("Member not found.", currentLanguage),
+          true
+        );
+
         return;
       }
 
       const member = selected.data();
 
       teamId.value = id;
-      memberName.value = member.name || "";
-      memberRole.value = member.role || "";
+
+      memberNameEn.value = member.nameEn || member.name || "";
+      memberNameAr.value = member.nameAr || "";
+      memberRoleEn.value = member.roleEn || member.role || "";
+      memberRoleAr.value = member.roleAr || "";
+
       memberDepartment.value = member.department || "";
       memberInitials.value = member.initials || "";
 
-      teamFormTitle.textContent = "Edit Team Member";
-      saveMemberButton.textContent = "Update Member";
+      teamFormTitle.textContent = currentLanguage === "ar"
+        ? "تعديل عضو الفريق"
+        : "Edit Team Member";
 
-      teamForm.scrollIntoView({ behavior: "smooth" });
+      saveMemberButton.textContent = currentLanguage === "ar"
+        ? "تحديث العضو"
+        : "Update Member";
+
+      teamForm.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
     } catch (error) {
-      console.error(error);
-      showMessage("Could not load member details.", true);
+      console.error("Edit member error:", error);
+
+      showMessage(
+        translateText(
+          "Could not load member details.",
+          currentLanguage
+        ),
+        true
+      );
     }
   }
 
   if (action === "delete-member") {
-    if (!confirm("Are you sure you want to delete this member?")) {
-      return;
-    }
+    const confirmed = confirm(
+      currentLanguage === "ar"
+        ? "هل أنت متأكد أنك تريد حذف هذا العضو؟"
+        : "Are you sure you want to delete this member?"
+    );
+
+    if (!confirmed) return;
 
     try {
-      await deleteDoc(doc(db, "team_members", id));
-      showMessage("Team member deleted successfully.");
+      await deleteDoc(
+        doc(db, "team_members", id)
+      );
+
+      showMessage(
+        translateText(
+          "Team member deleted successfully.",
+          currentLanguage
+        )
+      );
     } catch (error) {
-      console.error(error);
-      showMessage("Could not delete member.", true);
+      console.error("Delete member error:", error);
+
+      showMessage(
+        translateText(
+          "Could not delete member.",
+          currentLanguage
+        ),
+        true
+      );
     }
   }
 });
 
+// ========================================
+// TEAM: RESET FORM
+// ========================================
+
 function resetTeamForm() {
   teamForm.reset();
   teamId.value = "";
-  teamFormTitle.textContent = "Add Team Member";
-  saveMemberButton.textContent = "Save Member";
+
+  teamFormTitle.textContent = currentLanguage === "ar"
+    ? "إضافة عضو للفريق"
+    : "Add Team Member";
+
+  saveMemberButton.textContent = currentLanguage === "ar"
+    ? "حفظ العضو"
+    : "Save Member";
 }
 
 cancelMemberEdit.addEventListener("click", resetTeamForm);
 
-// Events: listen for Firestore changes
+// ========================================
+// EVENTS: RENDER
+// ========================================
+
+function renderEvents() {
+  if (!eventsList) return;
+
+  if (!latestEventsDocs.length) {
+    eventsList.innerHTML = `
+      <div class="empty">
+        ${currentLanguage === "ar"
+          ? "لم يتم العثور على فعاليات في Firebase حتى الآن."
+          : "No events found in Firebase yet."}
+      </div>
+    `;
+
+    return;
+  }
+
+  eventsList.innerHTML = latestEventsDocs.map(eventDoc => {
+    const item = eventDoc.data();
+    const id = escapeHTML(eventDoc.id);
+
+    return `
+      <article class="item">
+        <div class="item-info">
+          <h3>${escapeHTML(item.title || "Untitled event")}</h3>
+
+          <p>
+            ${escapeHTML(item.date || "")}
+            ·
+            ${escapeHTML(translateText(item.status || "", currentLanguage))}
+          </p>
+
+          <p>${escapeHTML(item.description || "")}</p>
+
+          <p>
+            ${Array.isArray(item.topics)
+              ? item.topics.map(topic => escapeHTML(topic)).join(" · ")
+              : ""}
+          </p>
+        </div>
+
+        <div class="item-actions">
+          <button
+            class="secondary-btn"
+            type="button"
+            data-action="edit-event"
+            data-id="${id}"
+          >${currentLanguage === "ar" ? "تعديل" : "Edit"}</button>
+
+          <button
+            class="danger-btn"
+            type="button"
+            data-action="delete-event"
+            data-id="${id}"
+          >${currentLanguage === "ar" ? "حذف" : "Delete"}</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+// ========================================
+// EVENTS: FIRESTORE LISTENER
+// ========================================
+
 function startEventsListener() {
-  eventsList.innerHTML = '<div class="empty">Loading events...</div>';
+  eventsList.innerHTML = `
+    <div class="empty">
+      ${currentLanguage === "ar"
+        ? "جاري تحميل الفعاليات..."
+        : "Loading events..."}
+    </div>
+  `;
 
   const eventsQuery = query(
     collection(db, "events"),
@@ -714,58 +1141,27 @@ function startEventsListener() {
   unsubscribeEvents = onSnapshot(
     eventsQuery,
     snapshot => {
-      if (snapshot.empty) {
-        eventsList.innerHTML = `
-          <div class="empty">
-            No events found in Firebase yet.
-          </div>
-        `;
-        return;
-      }
-
-      eventsList.innerHTML = snapshot.docs.map(eventDoc => {
-        const item = eventDoc.data();
-        const id = escapeHTML(eventDoc.id);
-
-        return `
-          <article class="item">
-            <div class="item-info">
-              <h3>${escapeHTML(item.title || "Untitled event")}</h3>
-              <p>${escapeHTML(item.date || "")} · ${escapeHTML(item.status || "")}</p>
-              <p>${escapeHTML(item.description || "")}</p>
-              <p>${Array.isArray(item.topics)
-                ? item.topics.map(escapeHTML).join(" · ")
-                : ""
-              }</p>
-            </div>
-
-            <div class="item-actions">
-              <button
-                class="secondary-btn"
-                type="button"
-                data-action="edit-event"
-                data-id="${id}"
-              >Edit</button>
-
-              <button
-                class="danger-btn"
-                type="button"
-                data-action="delete-event"
-                data-id="${id}"
-              >Delete</button>
-            </div>
-          </article>
-        `;
-      }).join("");
+      latestEventsDocs = snapshot.docs;
+      renderEvents();
     },
     error => {
       console.error("Events listener error:", error);
-      showMessage("Could not load events. Check Firestore rules.", true);
+
+      showMessage(
+        translateText(
+          "Could not load events. Check Firestore rules.",
+          currentLanguage
+        ),
+        true
+      );
     }
   );
 }
 
-// Events: add or update
+// ========================================
+// EVENTS: ADD OR UPDATE
+// ========================================
+
 eventForm.addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -780,13 +1176,28 @@ eventForm.addEventListener("submit", async event => {
       .filter(Boolean)
   };
 
-  if (!data.title || !data.date || !data.description || data.topics.length === 0) {
-    showMessage("Please complete all event fields and add at least one topic.", true);
+  if (
+    !data.title ||
+    !data.date ||
+    !data.description ||
+    data.topics.length === 0
+  ) {
+    showMessage(
+      translateText(
+        "Please complete all event fields and add at least one topic.",
+        currentLanguage
+      ),
+      true
+    );
+
     return;
   }
 
   saveEventButton.disabled = true;
-  saveEventButton.textContent = "Saving...";
+
+  saveEventButton.textContent = currentLanguage === "ar"
+    ? "جاري الحفظ..."
+    : "Saving...";
 
   try {
     if (eventId.value) {
@@ -795,23 +1206,50 @@ eventForm.addEventListener("submit", async event => {
         data
       );
 
-      showMessage("Event updated successfully.");
+      showMessage(
+        translateText(
+          "Event updated successfully.",
+          currentLanguage
+        )
+      );
     } else {
-      await addDoc(collection(db, "events"), data);
-      showMessage("Event added successfully.");
+      await addDoc(
+        collection(db, "events"),
+        data
+      );
+
+      showMessage(
+        translateText(
+          "Event added successfully.",
+          currentLanguage
+        )
+      );
     }
 
     resetEventForm();
   } catch (error) {
     console.error("Save event error:", error);
-    showMessage("Could not save event. Check your Firebase permissions.", true);
+
+    showMessage(
+      translateText(
+        "Could not save event. Check your Firebase permissions.",
+        currentLanguage
+      ),
+      true
+    );
   } finally {
     saveEventButton.disabled = false;
-    saveEventButton.textContent = "Save Event";
+
+    saveEventButton.textContent = currentLanguage === "ar"
+      ? "حفظ الفعالية"
+      : "Save Event";
   }
 });
 
-// Events: edit or delete
+// ========================================
+// EVENTS: EDIT OR DELETE
+// ========================================
+
 eventsList.addEventListener("click", async event => {
   const button = event.target.closest("button[data-action]");
 
@@ -822,11 +1260,18 @@ eventsList.addEventListener("click", async event => {
 
   if (action === "edit-event") {
     try {
-      const snapshot = await getDocs(collection(db, "events"));
-      const selected = snapshot.docs.find(item => item.id === id);
+      const selected = latestEventsDocs.find(
+        item => item.id === id
+      );
 
       if (!selected) {
-        showMessage("Event not found.", true);
+        showMessage(
+          currentLanguage === "ar"
+            ? "لم يتم العثور على الفعالية."
+            : "Event not found.",
+          true
+        );
+
         return;
       }
 
@@ -837,40 +1282,89 @@ eventsList.addEventListener("click", async event => {
       eventDate.value = item.date || "";
       eventStatus.value = item.status || "Upcoming";
       eventDescription.value = item.description || "";
+
       eventTopics.value = Array.isArray(item.topics)
         ? item.topics.join("\n")
         : "";
 
-      eventFormTitle.textContent = "Edit Event";
-      saveEventButton.textContent = "Update Event";
+      eventFormTitle.textContent = currentLanguage === "ar"
+        ? "تعديل الفعالية"
+        : "Edit Event";
 
-      eventForm.scrollIntoView({ behavior: "smooth" });
+      saveEventButton.textContent = currentLanguage === "ar"
+        ? "تحديث الفعالية"
+        : "Update Event";
+
+      eventForm.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
     } catch (error) {
-      console.error(error);
-      showMessage("Could not load event details.", true);
+      console.error("Edit event error:", error);
+
+      showMessage(
+        translateText(
+          "Could not load event details.",
+          currentLanguage
+        ),
+        true
+      );
     }
   }
 
   if (action === "delete-event") {
-    if (!confirm("Are you sure you want to delete this event?")) {
-      return;
-    }
+    const confirmed = confirm(
+      currentLanguage === "ar"
+        ? "هل أنت متأكد أنك تريد حذف هذه الفعالية؟"
+        : "Are you sure you want to delete this event?"
+    );
+
+    if (!confirmed) return;
 
     try {
-      await deleteDoc(doc(db, "events", id));
-      showMessage("Event deleted successfully.");
+      await deleteDoc(
+        doc(db, "events", id)
+      );
+
+      showMessage(
+        translateText(
+          "Event deleted successfully.",
+          currentLanguage
+        )
+      );
     } catch (error) {
-      console.error(error);
-      showMessage("Could not delete event.", true);
+      console.error("Delete event error:", error);
+
+      showMessage(
+        translateText(
+          "Could not delete event.",
+          currentLanguage
+        ),
+        true
+      );
     }
   }
 });
 
+// ========================================
+// EVENTS: RESET FORM
+// ========================================
+
 function resetEventForm() {
   eventForm.reset();
   eventId.value = "";
-  eventFormTitle.textContent = "Add Event";
-  saveEventButton.textContent = "Save Event";
+
+  eventFormTitle.textContent = currentLanguage === "ar"
+    ? "إضافة فعالية"
+    : "Add Event";
+
+  saveEventButton.textContent = currentLanguage === "ar"
+    ? "حفظ الفعالية"
+    : "Save Event";
 }
 
-cancelEventEdit.addEventListener("click", resetEventForm);
+// ========================================
+// INITIAL LANGUAGE
+// ========================================
+
+applyLanguage(currentLanguage);
