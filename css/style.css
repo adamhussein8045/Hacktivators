@@ -1226,3 +1226,41 @@ select {
   background: #ffffff !important;
   border: 1px solid #eae7e3 !important;
 }
+/* Remove all blue button colors */
+button,
+.btn,
+.button,
+a.btn,
+input[type="button"],
+input[type="submit"] {
+    background: #68452F !important;
+    color: #FFFFFF !important;
+    border-color: #68452F !important;
+    box-shadow: none !important;
+}
+
+/* Hover */
+button:hover,
+.btn:hover,
+.button:hover,
+a.btn:hover {
+    background: #171717 !important;
+    color: #FFFFFF !important;
+    border-color: #171717 !important;
+}
+
+/* Secondary buttons */
+.btn-secondary,
+.secondary-btn {
+    background: #FFFFFF !important;
+    color: #68452F !important;
+    border: 1px solid #68452F !important;
+}
+
+/* Focus */
+button:focus,
+.btn:focus,
+.button:focus {
+    outline-color: #68452F !important;
+    box-shadow: none !important;
+}
