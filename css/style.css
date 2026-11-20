@@ -1065,3 +1065,164 @@ html[dir="rtl"] .footer { direction: rtl; }
   background: #00D9F5;
   color: #071426;
 }
+
+/* HACKTIVATORS — PURE WHITE & BROWN IDENTITY */
+
+:root {
+  --bg: #ffffff;
+  --bg-soft: #ffffff;
+  --card: #ffffff;
+  --text: #171717;
+  --muted: #68452f;
+  --accent: #68452f;
+  --border: #eae7e3;
+}
+
+html,
+body,
+body.light-mode {
+  background: #ffffff !important;
+  color: #171717 !important;
+  font-family: "Aref Ruqaa", serif !important;
+}
+
+body * {
+  font-family: "Aref Ruqaa", serif !important;
+  text-shadow: none !important;
+}
+
+/* Navigation */
+.navbar {
+  background: #ffffff !important;
+  border: 1px solid #eae7e3 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.logo,
+.navbar nav a {
+  color: #171717 !important;
+}
+
+.logo span,
+.navbar nav a:hover,
+.navbar nav a.active {
+  color: #68452f !important;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #171717 !important;
+}
+
+.section-heading h2 span,
+.home-title span,
+.home-contact h2 span {
+  color: #68452f !important;
+  -webkit-text-fill-color: #68452f !important;
+  background: none !important;
+}
+
+p,
+small,
+.team-role,
+.home-description {
+  color: #68452f !important;
+}
+
+/* Backgrounds */
+.home-hero,
+.home-contact,
+.home-section-card,
+.team-card,
+.event-card,
+.project-card,
+.card,
+.topic {
+  background: #ffffff !important;
+  border: 1px solid #eae7e3 !important;
+  box-shadow: none !important;
+}
+
+.home-hero::before,
+.home-hero::after,
+.home-section-card::before {
+  display: none !important;
+}
+
+/* Buttons */
+.primary-btn {
+  color: #ffffff !important;
+  background: #68452f !important;
+  border: 1px solid #68452f !important;
+  box-shadow: none !important;
+}
+
+.primary-btn:hover {
+  color: #ffffff !important;
+  background: #171717 !important;
+  border-color: #171717 !important;
+}
+
+.secondary-btn {
+  color: #68452f !important;
+  background: #ffffff !important;
+  border: 1px solid #eae7e3 !important;
+}
+
+/* Cards */
+.team-avatar,
+.home-card-icon,
+.social-icon {
+  color: #68452f !important;
+  background: #ffffff !important;
+  border: 1px solid #eae7e3 !important;
+}
+
+.team-label,
+.event-date {
+  color: #68452f !important;
+  background: #ffffff !important;
+  border: 1px solid #eae7e3 !important;
+}
+
+.team-card:hover,
+.event-card:hover,
+.home-section-card:hover,
+.project-card:hover {
+  border-color: #68452f !important;
+  transform: translateY(-2px);
+  box-shadow: none !important;
+}
+
+/* Social */
+.social-card {
+  color: #171717 !important;
+  background: #ffffff !important;
+  border: 1px solid #eae7e3 !important;
+  box-shadow: none !important;
+}
+
+.social-card:hover {
+  border-color: #68452f !important;
+}
+
+/* Footer */
+.footer {
+  color: #68452f !important;
+  background: #ffffff !important;
+  border-top: 1px solid #eae7e3 !important;
+}
+
+.footer a {
+  color: #68452f !important;
+}
+
+/* Forms */
+input,
+textarea,
+select {
+  color: #171717 !important;
+  background: #ffffff !important;
+  border: 1px solid #eae7e3 !important;
+}
