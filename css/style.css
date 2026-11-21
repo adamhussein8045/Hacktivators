@@ -1062,11 +1062,11 @@ body,
 body.light-mode {
   background: #ffffff !important;
   color: #171717 !important;
-  font-family: "Aref Ruqaa", serif !important;
+  font-family: "Agrave Pro", serif !important;
 }
 
 body * {
-  font-family: "Aref Ruqaa", serif !important;
+  font-family: "Agrave Pro", serif !important;
   text-shadow: none !important;
 }
 
